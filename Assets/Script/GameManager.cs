@@ -6,6 +6,7 @@ public class GameManager : MonoBehaviour
 {
     // シングルトン化のための静的変数
     public static GameManager Instance { get; private set; }
+    public string selectedCityName; // 選択された城の名前を保持
 
     [Header("ゲーム情報")]
     public int currentTurn = 1;
@@ -71,5 +72,15 @@ public class GameManager : MonoBehaviour
         data.population = Mathf.RoundToInt(data.population * (1f + data.populationGrowthRate));
 
         // TODO: 士気低下、文化度変動、疫病・イベント判定などをここに追加
+    }
+    public void SetSelectedCity(string cityName)
+    {
+    selectedCityName = cityName;
+    }
+
+    public CityComponent GetSelectedCityComponent()
+    {
+    // selectedCityNameを使用して、allCitiesリストから該当するCityComponentを検索して返す
+    return allCities.Find(city => city.Data.cityName == selectedCityName);
     }
 }
