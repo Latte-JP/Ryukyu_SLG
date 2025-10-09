@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 
 public class CityManager : MonoBehaviour
 {
@@ -26,11 +27,13 @@ public class CityManager : MonoBehaviour
         {"南山 (島尻)",   new CityData("大里",   3, 10000, 4000, 2500)}
     };
 
+    [System.Obsolete]
     void Start()
     {
         InstantiateCities();
     }
 
+    [System.Obsolete]
     void InstantiateCities()
     {
         // 定義された全ての座標に城アイコンを配置
@@ -57,26 +60,48 @@ public class CityManager : MonoBehaviour
             // 1. アイコンのプレファブを生成
             GameObject cityIcon = Instantiate(cityPrefab, new Vector3(
                 // X 座標 (float)
-                dataEntry.Value.cityName switch {
+                dataEntry.Value.cityName switch
+                {
                     "今帰仁" => -0.34f,
                     "首里" => -3.26f,
                     "大里" => -3.75f,
                     _ => 0f
-                }, 
+                },
                 // Y 座標 (float)
-                0.1f, 
+                0.1f,
                 // Z 座標 (float) <- ここで new Vector3(...) を削除する
-                dataEntry.Value.cityName switch {
+                dataEntry.Value.cityName switch
+                {
                     "今帰仁" => 2.34f,
                     "首里" => -2.6f,
                     "大里" => -3.83f,
                     _ => 0f
                 }
             ), Quaternion.identity); // <- ここが Vector3 の閉じ括弧
-            
+
             // 2. CityComponentを取得し、データを初期化
             CityComponent cityComp = cityIcon.AddComponent<CityComponent>();
             cityComp.InitializeCity(dataEntry.Value);
+            // ★★★ 修正箇所: 生成した城をGameManagerに登録 ★★★
+            if (GameManager.Instance != null && !GameManager.Instance.allCities.Contains(cityComp))
+            {
+                GameManager.Instance.allCities.Add(cityComp);
+            }
+
+        }
+        if (GameManager.Instance != null)
+        {
+        // まずGameManagerのリストをクリアする（リロード時対策）
+        GameManager.Instance.allCities.Clear();
+
+        // Scene内の全てのCityComponentを取得し、GameManagerに登録し直す
+        CityComponent[] cities = FindObjectsByType<CityComponent>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        foreach (var city in cities)
+        {
+            GameManager.Instance.allCities.Add(city);
+        }
+        
+        Debug.Log($"[CityManager] 全{GameManager.Instance.allCities.Count}個の城をGameManagerに登録しました。");
         }
     }
 }

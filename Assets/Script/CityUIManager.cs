@@ -8,8 +8,8 @@ public class CityUIManager : MonoBehaviour
     private CityComponent currentCity;
     
     // UI要素をInspectorから接続
-    public Text cityNameText;
-    public Text goldText;
+    //public Text cityNameText;
+    //public Text goldText;
     public Button agricultureButton;
     public Button returnToMapButton;
 
@@ -18,20 +18,20 @@ public class CityUIManager : MonoBehaviour
     public TextMeshProUGUI goldDisplay;     // GoldDisplayオブジェクトを接続
     public TextMeshProUGUI foodDisplay;     // FoodDisplayオブジェクトを接続
 
-    void Start()
+   void Start()
     {
-        // GameManagerから現在操作する城のコンポーネントを取得
-        currentCity = GameManager.Instance.GetSelectedCityComponent();
+    // GameManagerから現在操作する城のコンポーネントを取得
+    currentCity = GameManager.Instance.GetSelectedCityComponent();
 
-        if (currentCity != null)
-        {
-            InitializeUI();
-            UpdateCityUI();
-        }
-        else
-        {
-            Debug.LogError("操作対象の城データが見つかりません！");
-        }
+    if (currentCity == null)
+    {
+        // 処理が失敗した場合、コンソールにエラーを出し、ここで処理を中断する
+        Debug.LogError("★エラー: 操作対象の城データが見つかりません！MapSceneで城が選択されたか確認してください。★");
+        return; // ★重要: currentCityがnullの場合、ここで処理を中断する★
+    }
+    
+    InitializeUI();
+    UpdateCityUI();
     }
 
     private void InitializeUI()

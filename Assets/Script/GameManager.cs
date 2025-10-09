@@ -33,7 +33,7 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         // 初期化時に全てのCityComponentをリストに登録
-        allCities = FindObjectsOfType<CityComponent>().ToList();
+        //allCities = FindObjectsOfType<CityComponent>().ToList();
         Debug.Log($"ゲーム開始。管理対象の城: {allCities.Count} 箇所");
     }
 

@@ -21,7 +21,7 @@ public class SceneLoaderOnClick : MonoBehaviour
                     Debug.Log("お城がクリックされました！"); // 確認用メッセージ
                     
                     // 城下町シーンをロードする
-                    SceneManager.LoadScene("CastleTownScene");
+                    SceneManager.LoadScene("CityScene");//CastleTownScene
                 }
             }
         }
