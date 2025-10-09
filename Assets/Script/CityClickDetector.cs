@@ -22,9 +22,15 @@ public class CityClickDetector : MonoBehaviour
                 Debug.LogError("FATAL ERROR: GameManager.InstanceがNULLです。マップシーンの起動順序やGameManagerのAwakeを確認してください。");
                 return; // GameManagerがない場合、即座に処理を中断
             }
+            // ★修正: CityComponentのData.cityNameではなく、cityIconの名前を直接使うなど、
+            // 確実に正規化されたキー（"今帰仁"、"首里"、"大里"）を渡すようにする。
+    
+            // cityComponent.Data.cityName は初期データと同じ "今帰仁" のはずですが、
+            // 念のため、GameManagerに渡す値が「今帰仁」「首里」「大里」のどれかであることを確認してください。
 
-            // 2.GameManagerに、どの城を操作するかを記憶させる
-            GameManager.Instance.SetSelectedCity(cityComponent.Data.cityName); 
+            string selectedKeyName = cityComponent.Data.cityName; // "今帰仁"
+
+            GameManager.Instance.SetSelectedCity(selectedKeyName); 
             
             // 3.CitySceneをロード
             SceneManager.LoadScene("CityScene"); 

@@ -81,6 +81,11 @@ public class GameManager : MonoBehaviour
     public CityComponent GetSelectedCityComponent()
     {
     // selectedCityNameを使用して、allCitiesリストから該当するCityComponentを検索して返す
-    return allCities.Find(city => city.Data.cityName == selectedCityName);
+    
+    // ★修正：完全一致ではなく、部分一致または Contains を使用してロバスト化 ★
+    // 例: "中山 (首里)" などの複雑な名前の場合でも、"首里"というデータを持っていれば検索できる
+    return allCities.Find(city => city.Data.cityName.Contains(selectedCityName));
+
+    // もし selectedCityName が "首里" なら、cityNameに "首里"を含むオブジェクトを探す
     }
 }
