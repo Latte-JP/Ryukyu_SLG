@@ -14,6 +14,28 @@ public class CityData
     public float populationGrowthRate; // 人口増加率 (例: 0.05 = 5%増加)
     public int foodStock;        // 保有する食糧
     public int goldStock;        // 保有する金
+    [Header("経済パラメーター")]
+    public int foodConsumption; // 食糧消費 (毎ターン)
+    public int foodIncome;      // 食糧収入 (毎ターン)
+    public int goldConsumption; // 金消費 (毎ターン)
+    public int goldIncome;      // 金収入 (毎ターン)
+    [Header("軍事パラメーター1")]
+    public string unitType1;     // 兵種（例: "剣兵", "海人隊", "雑兵"）
+    public int unitCount1;       // 兵数
+    public int trainingLevel1;   // 訓練度 (0-100)
+    public int morale1;          // 士気 (0-100)
+    [Header("軍事パラメーター2")]
+    public string unitType2;     // 兵種（例: "弓兵"）
+    public int unitCount2;       // 兵数
+    public int trainingLevel2;   // 訓練度 (0-100)
+    public int morale2;          // 士気 (0-100)
+    [Header("軍事パラメーター3")]
+    public string unitType3;     // 兵種（例: "海人隊"）
+    public int unitCount3;       // 兵数
+    public int trainingLevel3;   // 訓練度 (0-100)
+    public int morale3;          // 士気 (0-100)
+    [Header("ビジュアル情報")]
+    public string backgroundSceneID; // 例: "IMAKIJIN_GUSUKU", "SHURI_CASTLE"
     
     // === 統治・文化ステータス (内政システムの核) ===
     [Range(0, 100)] // 0から100の範囲でスライダー表示
@@ -78,6 +100,5 @@ public class TroopData
         morale = 50;
         training = 0;
     }
-    [Header("ビジュアル情報")]
-    public string backgroundSceneID; // 例: "IMAKIJIN_GUSUKU", "SHURI_CASTLE"
+
 }

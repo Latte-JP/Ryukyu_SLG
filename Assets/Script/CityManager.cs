@@ -20,15 +20,84 @@ public class CityManager : MonoBehaviour
     private readonly Dictionary<string, CitySetup> cityConfigurations = new Dictionary<string, CitySetup>()
     {
         // キー: 内部名, 値: (座標, CityData)
-        {"今帰仁", new CitySetup{ location = new Vector3(-0.34f, 0.1f, 2.34f), 
-                                  data = new CityData("今帰仁", 1, 15000, 5000, 3000)
-                                 { backgroundSceneID = "IMAKIJIN_GUSUKU" }} },
-        {"首里", new CitySetup{ location = new Vector3(-3.26f, 0.1f, -2.6f), 
-                                 data = new CityData("首里", 2, 30000, 8000, 5000)
-                                 { backgroundSceneID = "SHURI_CASTLE" } } },
-        {"大里", new CitySetup{ location = new Vector3(-3.75f, 0.1f, -3.83f), 
-                                 data = new CityData("大里", 3, 10000, 4000, 2500)
-                                 { backgroundSceneID = "OSATO_CASTLE" } } },
+        {"今帰仁", new CitySetup{ location = new Vector3(-0.34f, 0.1f, 2.34f),
+                                  data = new CityData("今帰仁城", 1, 15000, 5000, 3000)
+                                 { backgroundSceneID = "IMAKIJIN_GUSUKU",
+                                   // ★経済初期値★
+                                    foodConsumption = 300,
+                                    foodIncome = 800,
+                                    goldConsumption = 50,
+                                    goldIncome = 250,
+                                  // ★軍事初期値★
+                                    unitType1 = "剣兵",
+                                    unitCount1 = 1200,
+                                    trainingLevel1 = 75,
+                                    morale1 = 80,
+                                  // ★軍事初期値　弓兵★
+                                    unitType2 = "弓兵",
+                                    unitCount2 = 500,
+                                    trainingLevel2 = 75,
+                                    morale2 = 80,
+                                  // ★軍事初期値　海人隊★
+                                    unitType3 = "海人隊",
+                                    unitCount3 = 250,
+                                    trainingLevel3 = 70,
+                                    morale3 = 80
+                                  }
+                                }
+        },
+        {"首里", new CitySetup{ location = new Vector3(-3.26f, 0.1f, -2.6f),
+                                 data = new CityData("首里城", 2, 30000, 8000, 5000)
+                                 { backgroundSceneID = "SHURI_CASTLE",
+                                  // ★経済初期値★
+                                    foodConsumption = 700,
+                                    foodIncome = 1000,
+                                    goldConsumption = 100,
+                                    goldIncome = 600,
+                                  // ★軍事初期値　剣兵★
+                                    unitType1 = "剣兵",
+                                    unitCount1 = 1000,
+                                    trainingLevel1 = 70,
+                                    morale1 = 80,
+                                  // ★軍事初期値　弓兵★
+                                    unitType2 = "弓兵",
+                                    unitCount2 = 500,
+                                    trainingLevel2 = 75,
+                                    morale2 = 80,
+                                  // ★軍事初期値　海人隊★
+                                    unitType3 = "海人隊",
+                                    unitCount3 = 500,
+                                    trainingLevel3 = 70,
+                                    morale3 = 80
+                                 }
+                                }
+        },
+        {"大里", new CitySetup{ location = new Vector3(-3.75f, 0.1f, -3.83f),
+                                 data = new CityData("大里城", 3, 10000, 4000, 2500)
+                                 { backgroundSceneID = "OSATO_CASTLE",
+                                  // ★経済初期値★
+                                    foodConsumption = 700,
+                                    foodIncome = 1000,
+                                    goldConsumption = 100,
+                                    goldIncome = 600,
+                                  // ★軍事初期値★
+                                    unitType1 = "剣兵",
+                                    unitCount1 = 700,
+                                    trainingLevel1 = 65,
+                                    morale1 = 70,
+                                  // ★軍事初期値　弓兵★
+                                    unitType2 = "弓兵",
+                                    unitCount2 = 1000,
+                                    trainingLevel2 = 85,
+                                    morale2 = 90,
+                                  // ★軍事初期値　海人隊★
+                                    unitType3 = "海人隊",
+                                    unitCount3 = 700,
+                                    trainingLevel3 = 65,
+                                    morale3 = 80
+                                 }
+                                }
+        },
     };
 
     void Start()
