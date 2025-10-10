@@ -21,11 +21,14 @@ public class CityManager : MonoBehaviour
     {
         // キー: 内部名, 値: (座標, CityData)
         {"今帰仁", new CitySetup{ location = new Vector3(-0.34f, 0.1f, 2.34f), 
-                                  data = new CityData("今帰仁", 1, 15000, 5000, 3000) } },
+                                  data = new CityData("今帰仁", 1, 15000, 5000, 3000)
+                                 { backgroundSceneID = "IMAKIJIN_GUSUKU" }} },
         {"首里", new CitySetup{ location = new Vector3(-3.26f, 0.1f, -2.6f), 
-                                 data = new CityData("首里", 2, 30000, 8000, 5000) } },
+                                 data = new CityData("首里", 2, 30000, 8000, 5000)
+                                 { backgroundSceneID = "SHURI_CASTLE" } } },
         {"大里", new CitySetup{ location = new Vector3(-3.75f, 0.1f, -3.83f), 
-                                 data = new CityData("大里", 3, 10000, 4000, 2500) } },
+                                 data = new CityData("大里", 3, 10000, 4000, 2500)
+                                 { backgroundSceneID = "OSATO_CASTLE" } } },
     };
 
     void Start()

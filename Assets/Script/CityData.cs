@@ -78,4 +78,6 @@ public class TroopData
         morale = 50;
         training = 0;
     }
+    [Header("ビジュアル情報")]
+    public string backgroundSceneID; // 例: "IMAKIJIN_GUSUKU", "SHURI_CASTLE"
 }
