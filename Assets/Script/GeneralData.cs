@@ -6,7 +6,9 @@ public class GeneralData : ScriptableObject
 {
     [Header("基本情報")]
     public string generalName = "新武将";
-    public string allegiance = "中山"; // 所属勢力（三山時代）
+    // public string allegiance = "中山"; // ★★★ これを削除またはコメントアウト ★★★
+    // ★★★ 修正箇所2：Faction 型の allegiance に置き換え ★★★
+    public Faction allegiance = Faction.Chuzan; 
     
     [Header("能力値 (1〜100)")]
     // [Range]属性により、Inspectorでスライダーで値を調整可能になる
@@ -36,4 +38,12 @@ public enum SpecialSkill
     LandReformer,       // 農業・内政に特化
     NavalCommander,     // 海人隊の指揮に特化
     IronGunMaster       // 鉄砲隊の訓練・戦闘に特化
+}
+public enum Faction
+{
+    None,       // 在野（浪人）
+    Neutral,    // 中立（勢力に属さない中立の按司など）
+    Hokuzan,    // 北山
+    Chuzan,     // 中山
+    Nanzan      // 南山
 }
