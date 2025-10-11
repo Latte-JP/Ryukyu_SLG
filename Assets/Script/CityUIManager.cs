@@ -20,10 +20,18 @@ public class CityUIManager : MonoBehaviour
     public TMPro.TextMeshProUGUI goldIncomeText;
     public TMPro.TextMeshProUGUI goldConsumptionText;
 
-    public TMPro.TextMeshProUGUI unitTypeText;
-    public TMPro.TextMeshProUGUI unitCountText;
-    public TMPro.TextMeshProUGUI trainingLevelText;
-    public TMPro.TextMeshProUGUI moraleText;
+    public TMPro.TextMeshProUGUI unitTypeText1;
+    public TMPro.TextMeshProUGUI unitCountText1;
+    public TMPro.TextMeshProUGUI trainingLevelText1;
+    public TMPro.TextMeshProUGUI moraleText1;
+    public TMPro.TextMeshProUGUI unitTypeText2;
+    public TMPro.TextMeshProUGUI unitCountText2;
+    public TMPro.TextMeshProUGUI trainingLevelText2;
+    public TMPro.TextMeshProUGUI moraleText2;
+    public TMPro.TextMeshProUGUI unitTypeText3;
+    public TMPro.TextMeshProUGUI unitCountText3;
+    public TMPro.TextMeshProUGUI trainingLevelText3;
+    public TMPro.TextMeshProUGUI moraleText3;
 
 
 
@@ -90,24 +98,31 @@ public class CityUIManager : MonoBehaviour
 
         // 2. 金 (GoldStock)
         // 桁区切りなどを入れたい場合は ToString("N0") などを使用
-        goldDisplay.text = $"金: {data.goldStock:N0}";
+        goldDisplay.text = $"{data.goldStock:N0}";
 
         // 3. 食糧 (FoodStock)
-        foodDisplay.text = $"食糧: {data.foodStock:N0}"; 
+        foodDisplay.text = $"{data.foodStock:N0}"; 
 
         // TODO: 人口、農業レベル、文化度などの表示をここに追加
         // populationDisplay.text = $"人口: {data.population:N0}"; 
-            // ★★★ 新しいステータスを更新 ★★★
-    foodIncomeText.text      = $"食糧収入: {currentCity.Data.foodIncome}";
-    foodConsumptionText.text = $"食糧消費: {currentCity.Data.foodConsumption}";
-    goldIncomeText.text      = $"金収入: {currentCity.Data.goldIncome}";
-    goldConsumptionText.text = $"金消費: {currentCity.Data.goldConsumption}";
+        // ★★★ 新しいステータスを更新 ★★★
+    foodIncomeText.text      = $"{currentCity.Data.foodIncome}";
+    foodConsumptionText.text = $"{currentCity.Data.foodConsumption}";
+    goldIncomeText.text      = $"{currentCity.Data.goldIncome}";
+    goldConsumptionText.text = $"{currentCity.Data.goldConsumption}";
 
-    unitTypeText.text        = $"兵種: {currentCity.Data.unitType1}";
-    unitCountText.text       = $"兵数: {currentCity.Data.unitCount1}";
-    trainingLevelText.text   = $"訓練度: {currentCity.Data.trainingLevel1}%";
-    moraleText.text          = $"士気: {currentCity.Data.morale1}%";
-        
+    unitTypeText1.text        = $"{currentCity.Data.unitType1}";
+    unitCountText1.text       = $"{currentCity.Data.unitCount1}";
+    trainingLevelText1.text   = $"{currentCity.Data.trainingLevel1}%";
+    moraleText1.text          = $"{currentCity.Data.morale1}%";
+    unitTypeText2.text        = $"{currentCity.Data.unitType2}";
+    unitCountText2.text       = $"{currentCity.Data.unitCount2}";
+    trainingLevelText2.text   = $"{currentCity.Data.trainingLevel2}%";
+    moraleText2.text          = $"{currentCity.Data.morale2}%";
+    unitTypeText3.text        = $"{currentCity.Data.unitType3}";
+    unitCountText3.text       = $"{currentCity.Data.unitCount3}";
+    trainingLevelText3.text   = $"{currentCity.Data.trainingLevel3}%";
+    moraleText3.text          = $"{currentCity.Data.morale3}%";        
         // ... (ボタンリスナーの再設定などの既存ロジック)
     }
 //    public void UpdateCityUI()
