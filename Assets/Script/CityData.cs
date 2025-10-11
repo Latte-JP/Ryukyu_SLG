@@ -53,6 +53,9 @@ public class CityData
     public TroopData spearTroops;
     public TroopData archerTroops;
     public TroopData navyTroops; // 海人隊
+    [Header("配置武将")]
+    public GeneralData governingGeneral; // 城代（この城の内政を主導する武将）
+    // public GeneralData garrisonGeneral; // 守備隊長など、必要に応じて追加
 
     // コンストラクタ（初期値を設定するメソッド）
     public CityData(string name, int owner, int pop, int food, int gold)
