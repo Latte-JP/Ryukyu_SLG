@@ -10,6 +10,7 @@ public class GeneralData : ScriptableObject
     
     [Header("能力値 (1〜100)")]
     // [Range]属性により、Inspectorでスライダーで値を調整可能になる
+    [Range(1, 100)]
     public int leadership = 50;    // 統率力 (戦闘時の兵数)    
     [Range(1, 100)]
     public int warfare = 50;    // 武力 (戦闘時の攻撃力・防御力)
@@ -21,7 +22,6 @@ public class GeneralData : ScriptableObject
     public int charm = 50;    // 魅力 (登用の成功率)
     [Range(1, 100)]
     public int culture = 50;    // 文化力 (技術獲得確率、文化度成長)
-    [Range(1, 100)]
 
     [Header("特殊技能")]
     public SpecialSkill skill; // スキルを保有
