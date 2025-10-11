@@ -5894,7 +5894,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u5728\u5EAB"
+  m_text: "\u56FD\u5EAB"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 33a4c741f3fc91d42b4ffe533699fe63, type: 2}
   m_sharedMaterial: {fileID: 7489495208433163832, guid: 33a4c741f3fc91d42b4ffe533699fe63, type: 2}
