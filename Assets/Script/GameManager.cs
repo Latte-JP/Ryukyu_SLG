@@ -67,11 +67,32 @@ public class GameManager : MonoBehaviour
         // 資源の自動増減
         data.foodStock += data.agricultureLevel * 10 - data.population / 100; // 農業レベルと人口消費
         data.goldStock += data.commerceLevel * 5 - data.swordTroops.count / 50; // 商業レベルと兵の維持費
-        
+
         // 人口増加
         data.population = Mathf.RoundToInt(data.population * (1f + data.populationGrowthRate));
 
         // TODO: 士気低下、文化度変動、疫病・イベント判定などをここに追加
+        // 交易リスクイベント判定
+    if (data.tradeRiskFactor > 0.1f)
+    {
+        float baseRisk = data.tradeRiskFactor * 10f; // リスクを確率に変換 (例: factor 0.3 = 3%リスク)
+    
+        // ★★★ 修正箇所：水軍によるリスク軽減 ★★★
+        // 水軍兵数が多ければリスクを軽減（例: 海人隊1000でリスク-1.0%）
+        float mitigation = data.unitType3 == "海人隊" ? data.unitCount3 / 1000f : 0f;
+    
+        float finalRisk = Mathf.Max(0f, baseRisk - mitigation); 
+
+        if (Random.Range(0f, 100f) < finalRisk)
+        {
+            // 海賊イベント発生
+            int loss = data.goldStock / 10;
+            data.goldStock -= loss;
+            data.tradeRiskFactor = 0f; // リスクをリセット
+        
+            Debug.Log($"海賊襲撃！{data.cityName} の交易路が襲われ、金 {loss} を失いました。");
+        }
+    }
     }
     public void SetSelectedCity(string cityName)
     {

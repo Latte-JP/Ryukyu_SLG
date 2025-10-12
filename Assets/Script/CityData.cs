@@ -8,6 +8,10 @@ public class CityData
     // === 識別情報 ===
     public string cityName;
     public int ownerID; // 統治勢力のID (例: 1=北山, 2=中山, 3=南山, 0=中立)
+    [Header("交易・技術データ")]
+    public int tradeLevel = 0;         // 交易レベル (交易行動の効率に影響)
+    public bool hasIronGunTech = false; // 鉄砲技術フラグ
+    public float tradeRiskFactor = 0f; // 交易リスク係数（海賊発生率に影響）
     
     // === 経済・資源ステータス ===
     public int population;       // 人口

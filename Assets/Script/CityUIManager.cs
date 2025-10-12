@@ -141,10 +141,88 @@ public class CityUIManager : MonoBehaviour
 
         UpdateCityUI(); // UIを再更新
     }
-    
+
     // マップシーンに戻る
     public void ReturnToMap()
     {
         SceneManager.LoadScene("MapScene");
     }
+    // 武将の知略・スキルから交易成功率のボーナスを計算
+    private float CalculateNegotiationBonus(GeneralData general)
+    {
+        if (general == null) return 0f;
+
+        float bonus = general.intelligence * 0.002f; // 知略100で+20%ボーナス
+    
+        // スキル「MasterTrader」の効果を適用
+        if (general.skill == SpecialSkill.MasterTrader)
+        {
+             bonus += 0.15f; // 固定でさらに+15%
+        }
+        return bonus;
+    }
+
+    // 武将の文化力から技術獲得率のボーナスを計算
+    private float CalculateCultureBonus(GeneralData general)
+    {
+        if (general == null) return 0f;
+
+        float bonus = general.culture * 0.001f; // 文化力100で+10%ボーナス
+        return bonus;
+    }
+    // CityUIManager.cs の ExecuteTrade(string target) メソッド
+
+    public void ExecuteTrade(string target)
+    {
+        int tradeCost = 500;
+        if (currentCity.Data.goldStock < tradeCost)
+        {
+            Debug.Log("交易に必要な金が不足しています。");
+            return;
+        }
+        currentCity.Data.goldStock -= tradeCost; // コスト消費
+    
+        // 城代武将の能力値を取得
+        GeneralData cityGeneral = currentCity.Data.governingGeneral; 
+
+        // 1. 成功率の計算
+        float negotiationBonus = CalculateNegotiationBonus(cityGeneral);
+        float cultureBonus = CalculateCultureBonus(cityGeneral);
+    
+        float baseSuccessRate = 0.50f; 
+        // 最終成功率 = 基本 + 交渉ボーナス + 交易レベル
+        float finalSuccessRate = baseSuccessRate + negotiationBonus + (currentCity.Data.tradeLevel * 0.01f);
+    
+        // 2. 技術獲得確率の計算
+        float baseTechChance = 0.03f;
+        float finalTechChance = baseTechChance + cultureBonus + (currentCity.Data.tradeLevel * 0.005f); 
+    
+        // 3. 交易結果の判定
+        if (Random.value < finalSuccessRate)
+        {
+            // === 交易成功 ===
+            int goldGain = 1000 + (currentCity.Data.commerceLevel * 50);
+            currentCity.Data.goldStock += goldGain;
+            currentCity.Data.tradeLevel++;
+
+            // 技術入手判定 (明国との交易を想定)
+            if (target == "Ming" && !currentCity.Data.hasIronGunTech && Random.value < finalTechChance)
+            {
+                currentCity.Data.hasIronGunTech = true;
+                Debug.Log("交易成功！★鉄砲技術を入手しました！★");
+            }
+            Debug.Log($"交易成功！金 +{goldGain}。成功率: {finalSuccessRate*100:F1}%");
+        }
+        else
+        {
+            // === 交易失敗とリスク上昇 ===
+            int riskLoss = currentCity.Data.goldStock / 20; // 5%の金損失
+            currentCity.Data.goldStock -= riskLoss;
+            currentCity.Data.tradeRiskFactor += 0.15f; // リスク上昇
+        
+            Debug.Log($"交易失敗。金 {riskLoss} を失い、交易リスクが上昇しました。");
+        }
+
+        UpdateCityUI();
+}
 }
