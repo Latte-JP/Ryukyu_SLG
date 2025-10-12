@@ -10,15 +10,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f323651a8b63c0e48ae44b1c67b6a596, type: 3}
-  m_Name: NewGeneral
+  m_Name: Haniji
   m_EditorClassIdentifier: Assembly-CSharp::GeneralData
-  generalName: "\u65B0\u6B66\u5C06"
-  generalNameKana: "\u304B\u306A"
-  allegiance: 3
-  leadership: 50
-  warfare: 50
-  politics: 50
-  intelligence: 50
-  charm: 50
-  culture: 50
+  generalName: "\u6015\u5C3C\u829D"
+  generalNameKana: "\u306F\u306B\u3058"
+  allegiance: 2
+  leadership: 85
+  warfare: 88
+  politics: 70
+  intelligence: 75
+  charm: 75
+  culture: 65
   skill: 0

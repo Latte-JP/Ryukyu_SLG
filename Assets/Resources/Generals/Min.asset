@@ -10,15 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f323651a8b63c0e48ae44b1c67b6a596, type: 3}
-  m_Name: NewGeneral
+  m_Name: Min
   m_EditorClassIdentifier: Assembly-CSharp::GeneralData
-  generalName: "\u65B0\u6B66\u5C06"
-  generalNameKana: "\u304B\u306A"
-  allegiance: 3
-  leadership: 50
-  warfare: 50
-  politics: 50
-  intelligence: 50
-  charm: 50
-  culture: 50
+  generalName: "\u73C9"
+  generalNameKana: "\u307F\u3093"
+  allegiance: 2
+  leadership: 65
+  warfare: 60
+  politics: 60
+  intelligence: 60
+  charm: 55
+  culture: 55
+  portraitImage: {fileID: 0}
   skill: 0
