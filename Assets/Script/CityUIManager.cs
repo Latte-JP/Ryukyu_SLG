@@ -32,8 +32,10 @@ public class CityUIManager : MonoBehaviour
     public TMPro.TextMeshProUGUI unitCountText3;
     public TMPro.TextMeshProUGUI trainingLevelText3;
     public TMPro.TextMeshProUGUI moraleText3;
-
-
+    // 訓練と交流のモードを定義
+    public enum MilitaryActionMode { None, Training, MoraleBoost }
+    // 現在のモードを記憶する変数
+    private MilitaryActionMode currentMode = MilitaryActionMode.None;
 
     [Header("背景ビジュアル")]
     public UnityEngine.UI.RawImage backgroundRawImage; // Scene内のRawImageに接続
@@ -45,7 +47,13 @@ public class CityUIManager : MonoBehaviour
     public TextMeshProUGUI goldDisplay;     // GoldDisplayオブジェクトを接続
     public TextMeshProUGUI foodDisplay;     // FoodDisplayオブジェクトを接続
 
-   void Start()
+    [Header("軍事行動UI")]
+    // ★この変数にTroopSelectionPanelを接続★
+    public GameObject troopSelectionPanel; 
+    public Button mainTrainingButton;
+    public Button mainMoraleButton; 
+
+    void Start()
     {
     // GameManagerから現在操作する城のコンポーネントを取得
     currentCity = GameManager.Instance.GetSelectedCityComponent();
@@ -181,22 +189,22 @@ public class CityUIManager : MonoBehaviour
             return;
         }
         currentCity.Data.goldStock -= tradeCost; // コスト消費
-    
+
         // 城代武将の能力値を取得
-        GeneralData cityGeneral = currentCity.Data.governingGeneral; 
+        GeneralData cityGeneral = currentCity.Data.governingGeneral;
 
         // 1. 成功率の計算
         float negotiationBonus = CalculateNegotiationBonus(cityGeneral);
         float cultureBonus = CalculateCultureBonus(cityGeneral);
-    
-        float baseSuccessRate = 0.50f; 
+
+        float baseSuccessRate = 0.50f;
         // 最終成功率 = 基本 + 交渉ボーナス + 交易レベル
         float finalSuccessRate = baseSuccessRate + negotiationBonus + (currentCity.Data.tradeLevel * 0.01f);
-    
+
         // 2. 技術獲得確率の計算
         float baseTechChance = 0.03f;
-        float finalTechChance = baseTechChance + cultureBonus + (currentCity.Data.tradeLevel * 0.005f); 
-    
+        float finalTechChance = baseTechChance + cultureBonus + (currentCity.Data.tradeLevel * 0.005f);
+
         // 3. 交易結果の判定
         if (Random.value < finalSuccessRate)
         {
@@ -211,7 +219,7 @@ public class CityUIManager : MonoBehaviour
                 currentCity.Data.hasIronGunTech = true;
                 Debug.Log("交易成功！★鉄砲技術を入手しました！★");
             }
-            Debug.Log($"交易成功！金 +{goldGain}。成功率: {finalSuccessRate*100:F1}%");
+            Debug.Log($"交易成功！金 +{goldGain}。成功率: {finalSuccessRate * 100:F1}%");
         }
         else
         {
@@ -219,10 +227,101 @@ public class CityUIManager : MonoBehaviour
             int riskLoss = currentCity.Data.goldStock / 20; // 5%の金損失
             currentCity.Data.goldStock -= riskLoss;
             currentCity.Data.tradeRiskFactor += 0.15f; // リスク上昇
-        
+
             Debug.Log($"交易失敗。金 {riskLoss} を失い、交易リスクが上昇しました。");
         }
 
         UpdateCityUI();
-}
+    }
+    // 選択された兵種（index: 1, 2, or 3）に対して訓練を実行
+    //public void ExecuteTroopTraining(int troopIndex)
+    //{
+    //    int cost = 200;
+    //    int effect = 10;
+    //    string result = currentCity.PerformTraining(troopIndex, cost, effect);
+
+        // 結果をコンソールまたはUIに表示
+    //    Debug.Log($"[訓練結果] {result}");
+
+        // ここで兵種選択パネルを非表示にする処理（例: troopSelectionPanel.SetActive(false);）
+
+    //   UpdateCityUI();
+            // ★★★ 修正箇所: 処理完了後にパネルを非表示にする ★★★
+    //    if (troopSelectionPanel != null)
+    //    {
+    //        troopSelectionPanel.SetActive(false); // パネルを閉じる
+    //    }
+    //}
+
+    // 選択された兵種（index: 1, 2, or 3）に対して交流を実行
+    //public void ExecuteTroopMoraleBoost(int troopIndex)
+    //{
+    //    int cost = 150;
+    //    int effect = 15;
+    //    string result = currentCity.PerformMoraleBoost(troopIndex, cost, effect);
+
+        // 結果をコンソールまたはUIに表示
+    //    Debug.Log($"[交流結果] {result}");
+
+        // ここで兵種選択パネルを非表示にする処理
+
+    //    UpdateCityUI();
+    //    if (troopSelectionPanel != null)
+    //    {
+    //        troopSelectionPanel.SetActive(false); // パネルを閉じる
+    //    }
+    //}
+    // 訓練ボタンが押されたとき（兵種選択パネルを表示する）
+    public void ExecuteTraining()
+    {
+        currentMode = MilitaryActionMode.Training; // ★モードを訓練に設定★
+        // ★TODO: ここで兵種選択パネル（例: TroopSelectionPanel）を表示する
+        if (troopSelectionPanel != null)
+        {
+            troopSelectionPanel.SetActive(true);
+        }
+        Debug.Log("訓練ボタンが押されました。どの兵種を訓練するか選択してください。");
+        // テストのため、ここでは強制的に1番目の兵種（剣兵など）を選択して実行します
+        // ExecuteTroopTraining(1); // 実際のゲームでは削除
+    }
+
+    // 交流ボタンが押されたとき（兵種選択パネルを表示する）
+    public void ExecuteMoraleBoost()
+    {
+        currentMode = MilitaryActionMode.MoraleBoost; // ★モードを交流に設定★
+        // ★TODO: ここで兵種選択パネル（例: TroopSelectionPanel）を表示する
+        if (troopSelectionPanel != null)
+        {
+            troopSelectionPanel.SetActive(true);
+        }
+        Debug.Log("交流ボタンが押されました。どの兵種と交流するか選択してください。");
+
+        // テストのため、ここでは強制的に2番目の兵種（弓兵など）を選択して実行します
+        // ExecuteTroopMoraleBoost(2); // 実際のゲームでは削除
+    }
+    public void ExecuteTroopAction(int troopIndex)
+    {
+        string result = "ERROR: 不明な操作モードです。";
+
+        if (currentMode == MilitaryActionMode.Training)
+        {
+            // 訓練モードの場合、訓練ロジックを実行
+            result = currentCity.PerformTraining(troopIndex, 200, 10);
+        }
+        else if (currentMode == MilitaryActionMode.MoraleBoost)
+        {
+            // 交流モードの場合、交流ロジックを実行
+            result = currentCity.PerformMoraleBoost(troopIndex, 150, 15);
+        }
+
+        Debug.Log($"[{currentMode}結果] {result}");
+
+        // 後処理
+        UpdateCityUI();
+        if (troopSelectionPanel != null)
+        {
+            troopSelectionPanel.SetActive(false);
+        }
+        currentMode = MilitaryActionMode.None; // モードをリセット
+    }
 }

@@ -47,12 +47,13 @@ public class CityData
     public int agricultureLevel; // 農業レベル (食糧収入に影響)
     public int commerceLevel;    // 商業レベル (金収入に影響)
     public int roadNetworkLevel; // 海路/陸路整備レベル (移動速度、交易リスクに影響)
-    
+
     // === 防衛ステータス ===
     public int fortressDurability; // 城の耐久度 (旧: 城の耐久度)
 
     // === 軍事ステータス ===
     // 兵種ごとのデータを保持するための構造体を定義
+    [Header("軍事ステータス（兵種別）")]
     public TroopData swordTroops;
     public TroopData spearTroops;
     public TroopData archerTroops;
