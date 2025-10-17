@@ -2,7 +2,8 @@ using TMPro; // ★これが重要★
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using System.Collections.Generic; 
+using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 
 public class CityUIManager : MonoBehaviour
 {
@@ -32,8 +33,8 @@ public class CityUIManager : MonoBehaviour
     public TMPro.TextMeshProUGUI unitCountText3;
     public TMPro.TextMeshProUGUI trainingLevelText3;
     public TMPro.TextMeshProUGUI moraleText3;
-    // 訓練と交流のモードを定義
-    public enum MilitaryActionMode { None, Training, MoraleBoost }
+    // 訓練と交流と募兵のモードを定義
+    public enum MilitaryActionMode { None, Training, MoraleBoost, Recruitment }
     // 現在のモードを記憶する変数
     private MilitaryActionMode currentMode = MilitaryActionMode.None;
 
@@ -233,45 +234,7 @@ public class CityUIManager : MonoBehaviour
 
         UpdateCityUI();
     }
-    // 選択された兵種（index: 1, 2, or 3）に対して訓練を実行
-    //public void ExecuteTroopTraining(int troopIndex)
-    //{
-    //    int cost = 200;
-    //    int effect = 10;
-    //    string result = currentCity.PerformTraining(troopIndex, cost, effect);
 
-        // 結果をコンソールまたはUIに表示
-    //    Debug.Log($"[訓練結果] {result}");
-
-        // ここで兵種選択パネルを非表示にする処理（例: troopSelectionPanel.SetActive(false);）
-
-    //   UpdateCityUI();
-            // ★★★ 修正箇所: 処理完了後にパネルを非表示にする ★★★
-    //    if (troopSelectionPanel != null)
-    //    {
-    //        troopSelectionPanel.SetActive(false); // パネルを閉じる
-    //    }
-    //}
-
-    // 選択された兵種（index: 1, 2, or 3）に対して交流を実行
-    //public void ExecuteTroopMoraleBoost(int troopIndex)
-    //{
-    //    int cost = 150;
-    //    int effect = 15;
-    //    string result = currentCity.PerformMoraleBoost(troopIndex, cost, effect);
-
-        // 結果をコンソールまたはUIに表示
-    //    Debug.Log($"[交流結果] {result}");
-
-        // ここで兵種選択パネルを非表示にする処理
-
-    //    UpdateCityUI();
-    //    if (troopSelectionPanel != null)
-    //    {
-    //        troopSelectionPanel.SetActive(false); // パネルを閉じる
-    //    }
-    //}
-    // 訓練ボタンが押されたとき（兵種選択パネルを表示する）
     public void ExecuteTraining()
     {
         currentMode = MilitaryActionMode.Training; // ★モードを訓練に設定★
@@ -299,11 +262,31 @@ public class CityUIManager : MonoBehaviour
         // テストのため、ここでは強制的に2番目の兵種（弓兵など）を選択して実行します
         // ExecuteTroopMoraleBoost(2); // 実際のゲームでは削除
     }
+    // 募兵ボタンが押されたとき（兵種選択パネルを表示する）
+    public void ExecuteRecruitment()
+    {
+        currentMode = MilitaryActionMode.Recruitment; // ★モードを募兵に設定★
+        if (troopSelectionPanel != null)
+        {
+            troopSelectionPanel.SetActive(true);
+        }
+        Debug.Log("募兵モードに入ります。どの兵種を募兵するか選択してください。");
+    }
+
+
     public void ExecuteTroopAction(int troopIndex)
     {
         string result = "ERROR: 不明な操作モードです。";
+        int recruitAmount = 500; // 募兵数
+        int goldCost = recruitAmount * 2; // 兵士1人あたり2金
+        int foodCost = recruitAmount * 3; // 兵士1人あたり3食糧
 
-        if (currentMode == MilitaryActionMode.Training)
+        if (currentMode == MilitaryActionMode.Recruitment)
+        {
+            // ★募兵モードの場合のロジックを実行
+            result = currentCity.PerformRecruitment(troopIndex, goldCost, foodCost, recruitAmount);
+        }
+        else if (currentMode == MilitaryActionMode.Training)
         {
             // 訓練モードの場合、訓練ロジックを実行
             result = currentCity.PerformTraining(troopIndex, 200, 10);
@@ -314,9 +297,10 @@ public class CityUIManager : MonoBehaviour
             result = currentCity.PerformMoraleBoost(troopIndex, 150, 15);
         }
 
+
         Debug.Log($"[{currentMode}結果] {result}");
 
-        // 後処理
+        // 後処理(UI更新とパネル非表示)
         UpdateCityUI();
         if (troopSelectionPanel != null)
         {

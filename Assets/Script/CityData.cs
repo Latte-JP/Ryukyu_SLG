@@ -53,11 +53,10 @@ public class CityData
 
     // === 軍事ステータス ===
     // 兵種ごとのデータを保持するための構造体を定義
-    [Header("軍事ステータス（兵種別）")]
-    public TroopData swordTroops;
-    public TroopData spearTroops;
-    public TroopData archerTroops;
-    public TroopData navyTroops; // 海人隊
+    //[Header("軍事ステータス（兵種別）")]
+    //public TroopData swordTroops;
+    //public TroopData archerTroops;
+    //public TroopData navyTroops; // 海人隊
     [Header("配置武将")]
     public GeneralData governingGeneral; // 城代（この城の内政を主導する武将）
     // public GeneralData garrisonGeneral; // 守備隊長など、必要に応じて追加
@@ -79,10 +78,9 @@ public class CityData
         fortressDurability = 100;
         
         // 兵種データの初期化
-        swordTroops = new TroopData();
-        spearTroops = new TroopData();
-        archerTroops = new TroopData();
-        navyTroops = new TroopData();
+        //swordTroops = new TroopData();
+        //archerTroops = new TroopData();
+        //navyTroops = new TroopData();
     }
 
     // 毎ターンの処理などをここに追加する（例: FoodStock += agricultureLevel * 10）
@@ -93,20 +91,20 @@ public class CityData
 }
 
 // 兵種ごとの詳細データを保持する構造体
-[System.Serializable]
-public class TroopData
-{
-    public int count;    // 兵数
-    [Range(0, 100)]
-    public int morale;   // 士気
-    [Range(0, 100)]
-    public int training; // 訓練度
+//[System.Serializable]
+//public class TroopData
+//{
+//    public int count;    // 兵数
+//    [Range(0, 100)]
+//    public int morale;   // 士気
+//    [Range(0, 100)]
+//    public int training; // 訓練度
 
-    public TroopData()
-    {
-        count = 0;
-        morale = 50;
-        training = 0;
-    }
+    //public TroopData()
+    //{
+    //    count = 0;
+    //    morale = 50;
+    //    training = 0;
+    //}
 
-}
+//}

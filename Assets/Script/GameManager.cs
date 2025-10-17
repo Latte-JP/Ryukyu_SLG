@@ -64,14 +64,30 @@ public class GameManager : MonoBehaviour
     // 城のステータス更新ロジック
     private void ApplyCityUpdates(CityData data)
     {
+        // 統率力特化による維持ボーナス
+        float maintenanceBonus = 0f;
+        if (data.governingGeneral != null)
+        {
+            // 政治力と文化力を利用したボーナスを計算
+            maintenanceBonus = (data.governingGeneral.politics * 0.0005f) + (data.governingGeneral.culture * 0.0002f);
+        }
         // 資源の自動増減
         data.foodStock += data.agricultureLevel * 10 - data.population / 100; // 農業レベルと人口消費
-        data.goldStock += data.commerceLevel * 5 - data.swordTroops.count / 50; // 商業レベルと兵の維持費
+        data.goldStock += data.commerceLevel * 5 - data.unitCount1 / 50 - data.unitCount2 / 50 - data.unitCount3 / 50; // 商業レベルと兵の維持費
 
         // 人口増加
         data.population = Mathf.RoundToInt(data.population * (1f + data.populationGrowthRate));
 
         // TODO: 士気低下、文化度変動、疫病・イベント判定などをここに追加
+        // 訓練度と士気の自然な低下（ボーナスで軽減）
+        data.trainingLevel1 = Mathf.Max(0, data.trainingLevel1 - (int)(2 * (1f - maintenanceBonus)));
+        data.morale1 = Mathf.Max(0, data.morale1 - (int)(1 * (1f - maintenanceBonus)));
+        data.trainingLevel2 = Mathf.Max(0, data.trainingLevel2 - (int)(2 * (1f - maintenanceBonus)));
+        data.morale2 = Mathf.Max(0, data.morale2 - (int)(1 * (1f - maintenanceBonus)));
+        data.trainingLevel3 = Mathf.Max(0, data.trainingLevel3 - (int)(2 * (1f - maintenanceBonus)));
+        data.morale3 = Mathf.Max(0, data.morale3 - (int)(1 * (1f - maintenanceBonus)));
+        // 効果：政治力100の武将がいると、低下率が大幅に抑制されるため、毎ターンの訓練/交流の負担が軽減される。
+
         // 交易リスクイベント判定
     if (data.tradeRiskFactor > 0.1f)
     {
