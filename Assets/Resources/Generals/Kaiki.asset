@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f323651a8b63c0e48ae44b1c67b6a596, type: 3}
-  m_Name: Hanachi
+  m_Name: Kaiki
   m_EditorClassIdentifier: Assembly-CSharp::GeneralData
-  generalName: "\u6500\u5B89\u77E5"
-  generalNameKana: "\u306F\u3093\u3042\u3061"
-  allegiance: 1
-  leadership: 80
-  warfare: 90
-  politics: 50
-  intelligence: 65
-  charm: 70
-  culture: 60
+  generalName: "\u61D0\u6A5F"
+  generalNameKana: "\u304B\u3044\u304D"
+  allegiance: 5
+  leadership: 60
+  warfare: 30
+  politics: 98
+  intelligence: 90
+  charm: 50
+  culture: 95
   portraitImage: {fileID: 0}
   skill: 0
   aptitudeSword: 1

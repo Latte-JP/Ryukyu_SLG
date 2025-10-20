@@ -10,15 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f323651a8b63c0e48ae44b1c67b6a596, type: 3}
-  m_Name: NewGeneral 10
+  m_Name: Tsushimarokuro
   m_EditorClassIdentifier: Assembly-CSharp::GeneralData
-  generalName: "\u65B0\u6B66\u5C06"
-  generalNameKana: "\u304B\u306A"
-  allegiance: 3
+  generalName: "\u5BFE\u99AC\u516D\u90CE\u6B21\u90CE"
+  generalNameKana: "\u3064\u3057\u307E\u308D\u304F\u308D\u3058\u308D\u3046"
+  allegiance: 5
   leadership: 50
-  warfare: 50
-  politics: 50
-  intelligence: 50
-  charm: 50
+  warfare: 85
+  politics: 60
+  intelligence: 40
+  charm: 55
   culture: 50
+  portraitImage: {fileID: 0}
   skill: 0
+  aptitudeSword: 1
+  aptitudeBow: 3
+  aptitudeMarine: 2

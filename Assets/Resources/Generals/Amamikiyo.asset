@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f323651a8b63c0e48ae44b1c67b6a596, type: 3}
-  m_Name: Hanachi
+  m_Name: Amamikiyo
   m_EditorClassIdentifier: Assembly-CSharp::GeneralData
-  generalName: "\u6500\u5B89\u77E5"
-  generalNameKana: "\u306F\u3093\u3042\u3061"
-  allegiance: 1
-  leadership: 80
-  warfare: 90
-  politics: 50
-  intelligence: 65
-  charm: 70
-  culture: 60
+  generalName: "\u963F\u6469\u7F8E\u4E45"
+  generalNameKana: "\u3042\u307E\u307F\u304D\u3088"
+  allegiance: 3
+  leadership: 100
+  warfare: 100
+  politics: 100
+  intelligence: 100
+  charm: 100
+  culture: 100
   portraitImage: {fileID: 0}
   skill: 0
   aptitudeSword: 1

@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f323651a8b63c0e48ae44b1c67b6a596, type: 3}
-  m_Name: Hanachi
+  m_Name: Syohashi
   m_EditorClassIdentifier: Assembly-CSharp::GeneralData
-  generalName: "\u6500\u5B89\u77E5"
-  generalNameKana: "\u306F\u3093\u3042\u3061"
-  allegiance: 1
-  leadership: 80
-  warfare: 90
-  politics: 50
-  intelligence: 65
-  charm: 70
-  culture: 60
+  generalName: "\u5C1A\u5DF4\u5FD7"
+  generalNameKana: "\u3057\u3087\u3046\u306F\u3057"
+  allegiance: 12
+  leadership: 98
+  warfare: 95
+  politics: 95
+  intelligence: 98
+  charm: 90
+  culture: 90
   portraitImage: {fileID: 0}
   skill: 0
   aptitudeSword: 1

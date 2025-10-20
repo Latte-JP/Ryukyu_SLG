@@ -10,15 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f323651a8b63c0e48ae44b1c67b6a596, type: 3}
-  m_Name: NewGeneral 3
+  m_Name: Oueiji
   m_EditorClassIdentifier: Assembly-CSharp::GeneralData
-  generalName: "\u65B0\u6B66\u5C06"
-  generalNameKana: "\u304B\u306A"
-  allegiance: 3
-  leadership: 50
-  warfare: 50
-  politics: 50
-  intelligence: 50
-  charm: 50
-  culture: 50
+  generalName: "\u6C6A\u82F1\u7D2B"
+  generalNameKana: "\u304A\u3046\u3048\u3044\u3058"
+  allegiance: 13
+  leadership: 80
+  warfare: 85
+  politics: 75
+  intelligence: 70
+  charm: 80
+  culture: 65
+  portraitImage: {fileID: 0}
   skill: 0
+  aptitudeSword: 1
+  aptitudeBow: 3
+  aptitudeMarine: 2

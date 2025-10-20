@@ -11,7 +11,7 @@ public class GeneralData : ScriptableObject
     public string generalNameKana = "かな";
     // public string allegiance = "中山"; // ★★★ これを削除またはコメントアウト ★★★
     // ★★★ 修正箇所2：Faction 型の allegiance に置き換え ★★★
-    public Faction allegiance = Faction.Chuzan; 
+    public Faction allegiance = Faction.None; 
     
     [Header("能力値 (1〜100)")]
     // [Range]属性により、Inspectorでスライダーで値を調整可能になる
@@ -69,8 +69,17 @@ public enum SpecialSkill
 public enum Faction
 {
     None,       // 在野（浪人）
-    Neutral,    // 中立（勢力に属さない中立の按司など）
-    Hokuzan,    // 北山
-    Chuzan,     // 中山
-    Nanzan      // 南山
+    Nakijin,    // 北山の居城、今帰仁城　三大
+    Yomitanson, // 北山の城、読谷村城
+    Nejame,     // 北山の城　根謝銘城（祭祀的）
+    Arakawa,    // 北山の城　新川城
+    Urazoe,     // 中山の居城、浦添城
+    Katsuren,   // 中山の城　勝連城。三大
+    Chatan,     // 中山の城　北谷城
+    Zakimi,     // 中山の城　座喜味城（有名な武将無し。三大）
+    Iha,        // 中山の城　伊覇城（有名な武将無し）
+    Yamada,     // 中山の城　山田城（有名な武将無し）
+    Nakagusuku, // 中山の城　中城城（有名な武将無し。三大）
+    Sashiki,    // 南山の尚家の城　佐敷城
+    Shimashiri  // 南山の居城。島尻大里城
 }
