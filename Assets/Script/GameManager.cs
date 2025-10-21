@@ -16,6 +16,12 @@ public class GameManager : MonoBehaviour
     // 全ての城コンポーネントを管理するためのリスト
     public List<CityComponent> allCities = new List<CityComponent>();
 
+    [Header("武将データ管理")]
+    // ゲームに登場する全ての武将データ（GeneralDataアセット）を保持
+    [SerializeField] public List<GeneralData> allGenerals = new List<GeneralData>();
+
+    // ★注: このリストには、UnityエディタでGeneralDataアセットをドラッグ＆ドロップで接続する必要があります。
+    
     void Awake()
     {
         // シングルトン設定
@@ -124,5 +130,32 @@ public class GameManager : MonoBehaviour
     return allCities.Find(city => city.Data.cityName.Contains(selectedCityName));
 
     // もし selectedCityName が "首里" なら、cityNameに "首里"を含むオブジェクトを探す
+    }
+    
+    /// <summary>
+    /// 指定された都市に現在配置されている武将のリストを取得します。
+    /// </summary>
+    /// <param name="cityName">検索対象の都市名</param>
+    /// <returns>その城にいる武将のリスト</returns>
+    public List<GeneralData> GetGeneralsInCity(string cityName)
+    {
+        // 1. 検索したい都市名（文字列）を対応するEnum値に変換
+        Location targetLocation;
+    
+        // Enum.TryParseを使って、cityName（例："今帰仁城"）をLocation Enum（例: Nakijin）に変換しようと試みます。
+        // ★注意: CityData.cityName ("今帰仁城") と Enumの名称 (Nakijin) のマッピングが必要です。
+        // 例外処理のため、ここではcityNameの最初の部分を使用することを想定します。
+    
+        // (ここでは、cityName ("今帰仁城")から"今帰仁"を取り出し、Enumに変換するロジックが必要です)
+    
+        // 【最もシンプルな解決策：文字列比較に戻す】
+        // Enumを使用する代わりに、cityName（例: "今帰仁城"）と
+        // GeneralData.currentAssignedCity（武将の所在地名）が一致するかでフィルタリングします。
+    
+        return allGenerals
+            // ★重要: 武将データ (GeneralData) に cityName の文字列フィールドを追加し、
+            // 　そのフィールドと引数の cityName を比較してください。
+        .Where(g => g.currentAssignedCityName == cityName) 
+        .ToList();
     }
 }

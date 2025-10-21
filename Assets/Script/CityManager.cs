@@ -130,6 +130,29 @@ public class CityManager : MonoBehaviour
             CityComponent cityComp = cityIcon.AddComponent<CityComponent>();
             cityComp.InitializeCity(config.Value.data);
 
+            // --- [武将初期配置ロジック] ---
+            // 1. Resourcesフォルダから武将データをロード (各城のキーと同じ名前のアセットをロード)
+            GeneralData initialGeneral = Resources.Load<GeneralData>("Generals/" + config.Key); 
+            // 例: Resources/Generals/今帰仁.asset をロード
+            if (initialGeneral != null)
+            {
+                // 2. データをコピーしてCityDataに城代として割り当て
+                // ★Instantiate(initialGeneral)で、アセットのコピーを生成し、データを城に紐づけます★
+                cityComp.Data.governingGeneral = Instantiate(initialGeneral); 
+                
+                // 3. 武将の現在配置場所を設定
+                cityComp.Data.governingGeneral.currentAssignedCity = cityComp.Data.cityName; 
+                
+                // ログに出力（デバッグ用）
+                Debug.Log($"武将 {initialGeneral.generalName} を {cityComp.Data.cityName} に初期配置しました。");
+            }
+            else
+            {
+                Debug.LogWarning($"警告: 城 {config.Key} の初期武将データが見つかりませんでした。");
+            }
+            // --- [武将初期配置ロジック 終了] ---
+
+
             // 5. GameManagerに登録
             if (GameManager.Instance != null)
             {

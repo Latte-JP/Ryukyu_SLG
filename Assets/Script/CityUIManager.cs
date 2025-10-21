@@ -53,6 +53,14 @@ public class CityUIManager : MonoBehaviour
     public GameObject troopSelectionPanel; 
     public Button mainTrainingButton;
     public Button mainMoraleButton; 
+    
+    [Header("部隊編成UI")]
+    public GameObject deploymentPanel; // DeploymentPanelを接続
+    public Transform generalListContent; // GeneralListPanelの子要素を配置する親 (Content)
+    public TMP_InputField troopInputField; // TroopInput_Fieldを接続
+    public Button deployButton; // DeployButtonを接続
+
+private GeneralData selectedGeneral; // 現在選択中の武将データ
 
     void Start()
     {
@@ -272,7 +280,78 @@ public class CityUIManager : MonoBehaviour
         }
         Debug.Log("募兵モードに入ります。どの兵種を募兵するか選択してください。");
     }
+    public void LoadGeneralList()
+    {
+        // 既存のリスト要素をすべてクリア (リストの動的更新のため)
+        foreach (Transform child in generalListContent)
+        {
+            Destroy(child.gameObject);
+        }
+        // ★★★ 修正箇所: GameManagerから武将リストを取得 ★★★
+        string currentCityName = currentCity.Data.cityName;
+        List<GeneralData> localGenerals = GameManager.Instance.GetGeneralsInCity(currentCityName);
 
+        if (localGenerals.Count == 0)
+        {
+            Debug.Log("この城には現在、出陣可能な武将がいません。");
+            // 「武将不在」のメッセージを表示するUI要素を追加することも推奨されます。
+            return;
+        }
+        // 取得したlocalGeneralsリストの各武将に対してUI要素（ボタンなど）を生成し、
+        // OnClickイベントに SetSelectedGeneral(GeneralData general) を設定します。
+
+        // ... (UI要素の動的生成ロジックをここに記述) ...
+    }
+
+    // パネル内の武将ボタンが押されたときに呼び出されるメソッド
+    public void SetSelectedGeneral(GeneralData general)
+    {
+        selectedGeneral = general;
+        // 選択された武将の名前などを表示UIに反映させます
+        Debug.Log($"大将: {general.generalName} が選択されました。");
+    }
+
+    public void ExecuteDeploymentMode()
+    {
+        if (deploymentPanel != null)
+        {
+            deploymentPanel.SetActive(true);
+            // パネルを開く際に武将リストを生成・更新するメソッドを呼び出す
+            LoadGeneralList();
+        }
+    }
+    // CityUIManager.cs に追加
+
+    public void FinalizeDeployment()
+    {
+    if (selectedGeneral == null)
+    {
+        Debug.LogError("大将が選択されていません。");
+        return;
+    }
+    
+    int troopCount = 0;
+    // 兵数入力フィールドから値を取得し、数値に変換
+    if (!int.TryParse(troopInputField.text, out troopCount))
+    {
+        Debug.LogError("有効な兵数を入力してください。");
+        return;
+    }
+
+    // 兵種インデックスはUI側で選択させるか、デフォルト値を使用します。
+    // 現状は、テストのため海人隊 (3) を固定します。
+    int troopIndex = 3; 
+
+    // CityComponent.DeployTroop()の呼び出し
+    TroopData newTroop = currentCity.DeployTroop(selectedGeneral, troopIndex, troopCount);
+
+    if (newTroop != null)
+    {
+        Debug.Log($"【編成成功】武将: {newTroop.general.generalName} 部隊数: {newTroop.count} 攻撃力: {newTroop.attack}");
+        // TODO: ここでDeploymentPanelを閉じる
+        deploymentPanel.SetActive(false);
+    }
+    }
 
     public void ExecuteTroopAction(int troopIndex)
     {

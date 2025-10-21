@@ -66,7 +66,17 @@ public enum SpecialSkill
     NavalCommander,     // 海人隊の指揮に特化
     IronGunMaster       // 鉄砲隊の訓練・戦闘に特化
 }
-public enum Faction
+
+// ★修正1: 既存の'Faction allegiance'（勢力）フィールドを維持
+public Faction allegiance = Faction.Chuzan; 
+// ★修正2: 新しい'Location'（所在地）フィールドを追加
+public Location currentAssignedLocation = Location.None;
+
+//[Header("現在の配置情報")]
+// 武将が現在いる都市の名前。未所属なら空文字。
+//public string currentAssignedCity = "";
+
+public enum Location
 {
     None,       // 在野（浪人）
     Nakijin,    // 北山の居城、今帰仁城　三大
