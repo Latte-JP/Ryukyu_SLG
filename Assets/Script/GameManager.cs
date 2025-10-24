@@ -123,13 +123,13 @@ public class GameManager : MonoBehaviour
 
     public CityComponent GetSelectedCityComponent()
     {
-    // selectedCityNameを使用して、allCitiesリストから該当するCityComponentを検索して返す
-    
-    // ★修正：完全一致ではなく、部分一致または Contains を使用してロバスト化 ★
-    // 例: "中山 (首里)" などの複雑な名前の場合でも、"首里"というデータを持っていれば検索できる
-    return allCities.Find(city => city.Data.cityName.Contains(selectedCityName));
+        // selectedCityNameを使用して、allCitiesリストから該当するCityComponentを検索して返す
 
-    // もし selectedCityName が "首里" なら、cityNameに "首里"を含むオブジェクトを探す
+        // ★修正：完全一致ではなく、部分一致または Contains を使用してロバスト化 ★
+        // 例: "中山 (首里)" などの複雑な名前の場合でも、"首里"というデータを持っていれば検索できる
+        return allCities.Find(city => city.Data.cityName.Contains(selectedCityName));
+
+        // もし selectedCityName が "首里" なら、cityNameに "首里"を含むオブジェクトを探す
     }
     
     /// <summary>
@@ -137,25 +137,25 @@ public class GameManager : MonoBehaviour
     /// </summary>
     /// <param name="cityName">検索対象の都市名</param>
     /// <returns>その城にいる武将のリスト</returns>
+
     public List<GeneralData> GetGeneralsInCity(string cityName)
     {
-        // 1. 検索したい都市名（文字列）を対応するEnum値に変換
-        Location targetLocation;
-    
-        // Enum.TryParseを使って、cityName（例："今帰仁城"）をLocation Enum（例: Nakijin）に変換しようと試みます。
-        // ★注意: CityData.cityName ("今帰仁城") と Enumの名称 (Nakijin) のマッピングが必要です。
-        // 例外処理のため、ここではcityNameの最初の部分を使用することを想定します。
-    
-        // (ここでは、cityName ("今帰仁城")から"今帰仁"を取り出し、Enumに変換するロジックが必要です)
-    
-        // 【最もシンプルな解決策：文字列比較に戻す】
-        // Enumを使用する代わりに、cityName（例: "今帰仁城"）と
-        // GeneralData.currentAssignedCity（武将の所在地名）が一致するかでフィルタリングします。
-    
+        // 1. 検索対象のCityComponentを見つける
+        CityComponent targetCity = allCities.Find(city => city.Data.cityName.Contains(cityName));
+
+        if (targetCity == null)
+        {
+            Debug.LogError($"都市 '{cityName}' がallCitiesリストに見つかりません。");
+            return new List<GeneralData>();
+        }
+
+        // 2. ★★★ 修正箇所：targetLocationIDを定義し、値を取得 ★★★
+        Location targetLocationID = targetCity.Data.cityLocationID;
+        // ★★★ ここまで ★★★
+
+        // 3. 全武将リストから、LocationIDが一致する武将をフィルタリング
         return allGenerals
-            // ★重要: 武将データ (GeneralData) に cityName の文字列フィールドを追加し、
-            // 　そのフィールドと引数の cityName を比較してください。
-        .Where(g => g.currentAssignedCityName == cityName) 
-        .ToList();
+            .Where(g => g.currentAssignedLocation == targetLocationID) 
+            .ToList();
     }
 }

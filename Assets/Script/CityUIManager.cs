@@ -56,11 +56,15 @@ public class CityUIManager : MonoBehaviour
     
     [Header("部隊編成UI")]
     public GameObject deploymentPanel; // DeploymentPanelを接続
-    public Transform generalListContent; // GeneralListPanelの子要素を配置する親 (Content)
+    //public Transform generalListContent; // GeneralListPanelの子要素を配置する親 (Content)
     public TMP_InputField troopInputField; // TroopInput_Fieldを接続
     public Button deployButton; // DeployButtonを接続
 
-private GeneralData selectedGeneral; // 現在選択中の武将データ
+    private GeneralData selectedGeneral; // 現在選択中の武将データ
+
+    [Header("編成リスト用参照")]
+    public GameObject generalItemPrefab; // GeneralItemPrefabを接続
+    public RectTransform generalListContent; // ScrollViewのContentオブジェクトを接続
 
     void Start()
     {
@@ -282,25 +286,36 @@ private GeneralData selectedGeneral; // 現在選択中の武将データ
     }
     public void LoadGeneralList()
     {
-        // 既存のリスト要素をすべてクリア (リストの動的更新のため)
+        // 既存のリスト要素をすべてクリア
         foreach (Transform child in generalListContent)
         {
             Destroy(child.gameObject);
         }
-        // ★★★ 修正箇所: GameManagerから武将リストを取得 ★★★
+    
+        // GameManagerからこの城にいる武将リストを取得
         string currentCityName = currentCity.Data.cityName;
         List<GeneralData> localGenerals = GameManager.Instance.GetGeneralsInCity(currentCityName);
 
         if (localGenerals.Count == 0)
         {
             Debug.Log("この城には現在、出陣可能な武将がいません。");
-            // 「武将不在」のメッセージを表示するUI要素を追加することも推奨されます。
             return;
         }
-        // 取得したlocalGeneralsリストの各武将に対してUI要素（ボタンなど）を生成し、
-        // OnClickイベントに SetSelectedGeneral(GeneralData general) を設定します。
 
-        // ... (UI要素の動的生成ロジックをここに記述) ...
+        // リストの動的生成
+        foreach (GeneralData general in localGenerals)
+        {
+            // プレファブをContentの子要素として生成
+            GameObject itemObj = Instantiate(generalItemPrefab, generalListContent);
+        
+            // ★重要: ItemControllerにデータを渡し、ボタンのOnClickを設定する
+            GeneralItemController itemController = itemObj.GetComponent<GeneralItemController>();
+            if (itemController != null)
+            {
+                // (次のステップで作成する) ItemControllerの初期化メソッドを呼び出す
+                itemController.Initialize(general, this); 
+            }
+        }
     }
 
     // パネル内の武将ボタンが押されたときに呼び出されるメソッド

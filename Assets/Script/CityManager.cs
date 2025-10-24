@@ -138,10 +138,14 @@ public class CityManager : MonoBehaviour
             {
                 // 2. データをコピーしてCityDataに城代として割り当て
                 // ★Instantiate(initialGeneral)で、アセットのコピーを生成し、データを城に紐づけます★
-                cityComp.Data.governingGeneral = Instantiate(initialGeneral); 
+                cityComp.Data.governingGeneral = Instantiate(initialGeneral);
+
+        // 3. 武将の現在配置場所を設定
+        //cityComp.Data.governingGeneral.currentAssignedCity = cityComp.Data.cityName; 
+        // ★★★ 修正後：Location Enum を使用するロジックに変更 ★★★
+        // 最初に城代として配置された武将は、その城のLocationIDにいるとマークする
+        cityComp.Data.governingGeneral.currentAssignedLocation = cityComp.Data.cityLocationID;
                 
-                // 3. 武将の現在配置場所を設定
-                cityComp.Data.governingGeneral.currentAssignedCity = cityComp.Data.cityName; 
                 
                 // ログに出力（デバッグ用）
                 Debug.Log($"武将 {initialGeneral.generalName} を {cityComp.Data.cityName} に初期配置しました。");

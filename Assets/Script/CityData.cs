@@ -5,6 +5,9 @@ using System; // Enumを使うために必要
 [System.Serializable]
 public class CityData
 {
+    [Header("都市の地理情報")]
+    public Location cityLocationID; // この都市に対応するLocation Enum
+
     // === 識別情報 ===
     public string cityName;
     public int ownerID; // 統治勢力のID (例: 1=北山, 2=中山, 3=南山, 0=中立)
