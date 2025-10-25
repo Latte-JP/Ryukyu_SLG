@@ -66,34 +66,41 @@ public class CityUIManager : MonoBehaviour
     public GameObject generalItemPrefab; // GeneralItemPrefabを接続
     public RectTransform generalListContent; // ScrollViewのContentオブジェクトを接続
 
+    public Toggle swordToggle;
+    public Toggle bowToggle;
+    public Toggle navyToggle;
+    // 選択された兵種インデックス (1, 2, or 3)
+    private int selectedTroopIndex = 1;
+
+
     void Start()
     {
-    // GameManagerから現在操作する城のコンポーネントを取得
-    currentCity = GameManager.Instance.GetSelectedCityComponent();
+        // GameManagerから現在操作する城のコンポーネントを取得
+        currentCity = GameManager.Instance.GetSelectedCityComponent();
 
-    if (currentCity == null)
-    {
-        // 処理が失敗した場合、コンソールにエラーを出し、ここで処理を中断する
-        Debug.LogError("★エラー: 操作対象の城データが見つかりません！MapSceneで城が選択されたか確認してください。★");
-        return; // ★重要: currentCityがnullの場合、ここで処理を中断する★
-    }
+        if (currentCity == null)
+        {
+            // 処理が失敗した場合、コンソールにエラーを出し、ここで処理を中断する
+            Debug.LogError("★エラー: 操作対象の城データが見つかりません！MapSceneで城が選択されたか確認してください。★");
+            return; // ★重要: currentCityがnullの場合、ここで処理を中断する★
+        }
     
-    InitializeUI();
-    UpdateCityUI();
-    // ★★★ 修正箇所：背景画像の切り替え ★★★
-    string targetID = currentCity.Data.backgroundSceneID;
-    // textureIDsリスト内でtargetIDを検索
-    int index = textureIDs.IndexOf(targetID);
-    if (index >= 0 && index < backgroundTextures.Count)
-    {
-        // 対応するテクスチャをRawImageに設定
-        backgroundRawImage.texture = backgroundTextures[index];
-        Debug.Log($"背景を {targetID} に変更しました。");
-    }
-    else
-    {
-        Debug.LogWarning($"背景ID '{targetID}' のテクスチャが見つかりません。");
-    }
+        InitializeUI();
+        UpdateCityUI();
+        // ★★★ 修正箇所：背景画像の切り替え ★★★
+        string targetID = currentCity.Data.backgroundSceneID;
+        // textureIDsリスト内でtargetIDを検索
+        int index = textureIDs.IndexOf(targetID);
+        if (index >= 0 && index < backgroundTextures.Count)
+        {
+            // 対応するテクスチャをRawImageに設定
+            backgroundRawImage.texture = backgroundTextures[index];
+            Debug.Log($"背景を {targetID} に変更しました。");
+        }
+        else
+        {
+            Debug.LogWarning($"背景ID '{targetID}' のテクスチャが見つかりません。");
+        }
     }
 
     private void InitializeUI()
@@ -101,7 +108,13 @@ public class CityUIManager : MonoBehaviour
         // UIボタンのリスナー設定
         agricultureButton.onClick.AddListener(ExecuteAgriculture);
         returnToMapButton.onClick.AddListener(ReturnToMap);
-
+        // トグルが切り替わったときのイベントリスナーを設定
+        swordToggle.onValueChanged.AddListener((isOn) => { if (isOn) selectedTroopIndex = 1; });
+        bowToggle.onValueChanged.AddListener((isOn) => { if (isOn) selectedTroopIndex = 2; });
+        navyToggle.onValueChanged.AddListener((isOn) => { if (isOn) selectedTroopIndex = 3; });
+        
+        // 編成ボタンのリスナーを設定
+        deployButton.onClick.AddListener(FinalizeDeployment);
         // TODO: 他のボタン (商業、交易、訓練など) もここに追加
     }
 // パネルの情報を選択中の城データで更新
@@ -127,23 +140,23 @@ public class CityUIManager : MonoBehaviour
         // TODO: 人口、農業レベル、文化度などの表示をここに追加
         // populationDisplay.text = $"人口: {data.population:N0}"; 
         // ★★★ 新しいステータスを更新 ★★★
-    foodIncomeText.text      = $"{currentCity.Data.foodIncome}";
-    foodConsumptionText.text = $"{currentCity.Data.foodConsumption}";
-    goldIncomeText.text      = $"{currentCity.Data.goldIncome}";
-    goldConsumptionText.text = $"{currentCity.Data.goldConsumption}";
+        foodIncomeText.text      = $"{currentCity.Data.foodIncome}";
+        foodConsumptionText.text = $"{currentCity.Data.foodConsumption}";
+        goldIncomeText.text      = $"{currentCity.Data.goldIncome}";
+        goldConsumptionText.text = $"{currentCity.Data.goldConsumption}";
 
-    unitTypeText1.text        = $"{currentCity.Data.unitType1}";
-    unitCountText1.text       = $"{currentCity.Data.unitCount1}";
-    trainingLevelText1.text   = $"{currentCity.Data.trainingLevel1}%";
-    moraleText1.text          = $"{currentCity.Data.morale1}%";
-    unitTypeText2.text        = $"{currentCity.Data.unitType2}";
-    unitCountText2.text       = $"{currentCity.Data.unitCount2}";
-    trainingLevelText2.text   = $"{currentCity.Data.trainingLevel2}%";
-    moraleText2.text          = $"{currentCity.Data.morale2}%";
-    unitTypeText3.text        = $"{currentCity.Data.unitType3}";
-    unitCountText3.text       = $"{currentCity.Data.unitCount3}";
-    trainingLevelText3.text   = $"{currentCity.Data.trainingLevel3}%";
-    moraleText3.text          = $"{currentCity.Data.morale3}%";        
+        unitTypeText1.text        = $"{currentCity.Data.unitType1}";
+        unitCountText1.text       = $"{currentCity.Data.unitCount1}";
+        trainingLevelText1.text   = $"{currentCity.Data.trainingLevel1}%";
+        moraleText1.text          = $"{currentCity.Data.morale1}%";
+        unitTypeText2.text        = $"{currentCity.Data.unitType2}";
+        unitCountText2.text       = $"{currentCity.Data.unitCount2}";
+        trainingLevelText2.text   = $"{currentCity.Data.trainingLevel2}%";
+        moraleText2.text          = $"{currentCity.Data.morale2}%";
+        unitTypeText3.text        = $"{currentCity.Data.unitType3}";
+        unitCountText3.text       = $"{currentCity.Data.unitCount3}";
+        trainingLevelText3.text   = $"{currentCity.Data.trainingLevel3}%";
+        moraleText3.text          = $"{currentCity.Data.morale3}%";        
         // ... (ボタンリスナーの再設定などの既存ロジック)
     }
 //    public void UpdateCityUI()
@@ -286,45 +299,43 @@ public class CityUIManager : MonoBehaviour
     }
     public void LoadGeneralList()
     {
-        // 既存のリスト要素をすべてクリア
+        // 1. リスト要素をすべてクリア (スクロールリストの Content をリセット)
+        // generalListContentはScroll ViewのContent RectTransformです
         foreach (Transform child in generalListContent)
         {
             Destroy(child.gameObject);
         }
     
-        // GameManagerからこの城にいる武将リストを取得
+        // 2. 現在の城の武将リストを取得 (Location Enumに基づいてフィルタリング)
         string currentCityName = currentCity.Data.cityName;
         List<GeneralData> localGenerals = GameManager.Instance.GetGeneralsInCity(currentCityName);
 
-        if (localGenerals.Count == 0)
+        if (localGenerals == null || localGenerals.Count == 0)
         {
             Debug.Log("この城には現在、出陣可能な武将がいません。");
+            // TODO: ここに「武将不在」メッセージを表示するUIロジックを追加
             return;
         }
 
-        // リストの動的生成
+        // 3. リストの動的生成
         foreach (GeneralData general in localGenerals)
         {
-            // プレファブをContentの子要素として生成
+            // generalItemPrefab: 作成した武将アイテムのUIプレファブ
+            // generalListContent: ScrollViewのContent RectTransform (生成場所)
             GameObject itemObj = Instantiate(generalItemPrefab, generalListContent);
-        
-            // ★重要: ItemControllerにデータを渡し、ボタンのOnClickを設定する
+            
+            // 4. ItemControllerにデータを渡し、初期化
             GeneralItemController itemController = itemObj.GetComponent<GeneralItemController>();
             if (itemController != null)
             {
-                // (次のステップで作成する) ItemControllerの初期化メソッドを呼び出す
+                // ItemControllerのInitializeメソッドを呼び出す
                 itemController.Initialize(general, this); 
             }
         }
+    
+        Debug.Log($"【編成リスト】{localGenerals.Count}名の武将をロードしました。");
     }
 
-    // パネル内の武将ボタンが押されたときに呼び出されるメソッド
-    public void SetSelectedGeneral(GeneralData general)
-    {
-        selectedGeneral = general;
-        // 選択された武将の名前などを表示UIに反映させます
-        Debug.Log($"大将: {general.generalName} が選択されました。");
-    }
 
     public void ExecuteDeploymentMode()
     {
@@ -353,17 +364,15 @@ public class CityUIManager : MonoBehaviour
         return;
     }
 
-    // 兵種インデックスはUI側で選択させるか、デフォルト値を使用します。
-    // 現状は、テストのため海人隊 (3) を固定します。
-    int troopIndex = 3; 
+    // 選択された兵種インデックス (1, 2, or 3)
+    int troopIndex = selectedTroopIndex;
 
     // CityComponent.DeployTroop()の呼び出し
-    TroopData newTroop = currentCity.DeployTroop(selectedGeneral, troopIndex, troopCount);
-
+    TroopData newTroop = currentCity.DeployTroop(selectedDeploymentGeneral, troopIndex, troopCount);
     if (newTroop != null)
     {
-        Debug.Log($"【編成成功】武将: {newTroop.general.generalName} 部隊数: {newTroop.count} 攻撃力: {newTroop.attack}");
-        // TODO: ここでDeploymentPanelを閉じる
+        Debug.Log($"【編成成功】{newTroop.unitName} 部隊が出陣準備完了。");
+        // TODO: ここで部隊をマップ上の出陣地点などに配置するロジックを実行
         deploymentPanel.SetActive(false);
     }
     }
@@ -401,5 +410,17 @@ public class CityUIManager : MonoBehaviour
             troopSelectionPanel.SetActive(false);
         }
         currentMode = MilitaryActionMode.None; // モードをリセット
+    }
+
+    private GeneralData selectedDeploymentGeneral; // 出陣のために選択された武将
+
+    public void SetSelectedGeneral(GeneralData general)
+    {
+        selectedDeploymentGeneral = general;
+    
+        // 選択された武将の情報を画面の別の場所（例: 確定エリア）に表示
+        // (例: finalGeneralNameText.text = general.generalName;)
+    
+        Debug.Log($"大将として {general.generalName} を選択しました。");
     }
 }

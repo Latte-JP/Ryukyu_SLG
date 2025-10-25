@@ -5950,8 +5950,11 @@ MonoBehaviour:
   deploymentPanel: {fileID: 0}
   troopInputField: {fileID: 0}
   deployButton: {fileID: 0}
-  generalItemPrefab: {fileID: 0}
-  generalListContent: {fileID: 0}
+  generalItemPrefab: {fileID: 9218766336455012326, guid: ddff6e6e1c5729a4c94441c0ae926c9d, type: 3}
+  generalListContent: {fileID: 837832613}
+  swordToggle: {fileID: 0}
+  bowToggle: {fileID: 0}
+  navyToggle: {fileID: 0}
 --- !u!1 &835558894
 GameObject:
   m_ObjectHideFlags: 0

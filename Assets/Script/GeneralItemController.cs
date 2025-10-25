@@ -1,13 +1,12 @@
-// GeneralItemController.cs を新規作成し、GeneralItemPrefabにアタッチ
-
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
 public class GeneralItemController : MonoBehaviour
 {
+    // ★Inspectorで接続するUI要素★
     public Button selectButton;
-    public Image portraitImage;
+    public RawImage portraitImage; // RawImageに変更
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI statsText;
 
@@ -19,13 +18,21 @@ public class GeneralItemController : MonoBehaviour
         myGeneralData = general;
         uiManager = manager;
 
-        // UI要素にデータを反映
+        // 1. UI要素にデータを反映
         nameText.text = general.generalName;
-        statsText.text = $"武力:{general.warfare} 統率:{general.leadership}";
-        portraitImage.sprite = general.portraitImage;
+        
+        // 能力値を表示（統率力特化の設計を反映）
+        statsText.text = $"統率:{general.leadership} 武力:{general.warfare} 知略:{general.intelligence}";
+        
+        // 顔画像を表示 (SpriteをRawImageに表示)
+        if (general.portraitImage != null)
+        {
+            portraitImage.texture = general.portraitImage.texture;
+        }
 
-        // ボタンが押されたとき、CityUIManagerに武将データを渡す
+        // 2. ボタンのOnClickイベント設定
         selectButton.onClick.RemoveAllListeners();
-        selectButton.onClick.AddListener(() => uiManager.SetSelectedGeneral(myGeneralData));
+        // ボタンが押されたら、CityUIManagerのSetSelectedGeneralに武将データを渡す
+        selectButton.onClick.AddListener(() => uiManager.SetSelectedGeneral(myGeneralData)); 
     }
 }
