@@ -22,13 +22,41 @@ public class CityComponent : MonoBehaviour
         {
             Data.goldStock -= cost;
             Data.agricultureLevel += effect;
-            Debug.Log($"{Data.cityName}で農業が実行されました。金消費: {cost}、農業レベル: {Data.agricultureLevel}");
+            Debug.Log($"{Data.cityName}で農業開拓が実行されました。金消費: {cost}、農業レベル: {Data.agricultureLevel}");
         }
         else
         {
-            Debug.Log($"金が足りません。農業を実行できませんでした。");
+            Debug.Log($"金が足りません。農業開拓を実行できませんでした。");
         }
     }
+// 内政行動の実行（市場開拓／商業）
+    public string PerformCommerceAction(int cost, int effect)
+    {
+        if (Data.goldStock >= cost)
+        {
+            Data.goldStock -= cost;
+            Data.commerceLevel += effect; // 商業レベルを増加させる
+            return $"{Data.cityName}で市場開拓を実行。金消費: {cost}、商業レベル: {Data.commerceLevel}";
+        }
+        else
+        {
+            return $"金が足りません。市場開拓を実行できませんでした。";
+        }
+    }
+    public string PerformTradeAction(int cost, int effect)
+    {
+        if (Data.goldStock >= cost)
+        {
+            Data.goldStock -= cost;
+            Data.tradeLevel += effect; // 交易レベルを増加させる
+            return $"{Data.cityName}で港整備を実行。金消費: {cost}、交易レベル: {Data.tradeLevel}";
+        }
+        else
+        {
+            return $"金が足りません。港整備を実行できませんでした。";
+        }
+    }
+
     // ----------------------------------------------------
     // 兵種を指定して訓練を実行
     // ----------------------------------------------------
@@ -44,17 +72,17 @@ public class CityComponent : MonoBehaviour
                 // 統率値に応じて訓練効率を向上 (戦術100で+20%の効率)
                 efficiencyBonus += Data.governingGeneral.leadership * 0.002f;
             }
-                // 弓兵 (troopIndex = 2)のボーナス計算
+            // 弓兵 (troopIndex = 2)のボーナス計算
             if (troopIndex == 2)
             {
                 // 統率値に応じて訓練効率を向上 (戦術100で+20%の効率)
-                efficiencyBonus += Data.governingGeneral.leadership * 0.002f; 
+                efficiencyBonus += Data.governingGeneral.leadership * 0.002f;
             }
-                // 剣兵 (troopIndex = 1) のボーナス計算
+            // 剣兵 (troopIndex = 1) のボーナス計算
             if (troopIndex == 1)
             {
                 // 統率値に応じて訓練効率を向上 (戦術100で+20%の効率)
-                efficiencyBonus += Data.governingGeneral.leadership * 0.002f; 
+                efficiencyBonus += Data.governingGeneral.leadership * 0.002f;
             }
         }
         if (Data.goldStock < goldCost)
@@ -88,12 +116,12 @@ public class CityComponent : MonoBehaviour
             default:
                 return "ERROR: 不正な兵種インデックス";
         }
-    
+
         Data.goldStock -= goldCost;
-    
+
         // 訓練度の更新 (最大100まで)
         targetTraining = Mathf.Min(100, targetTraining + (int)(effect * efficiencyBonus));
-    
+
         // 訓練度の上昇は士気を一時的に低下させる⇒士気は低下しないものとする。
         //targetMorale = Mathf.Max(0, targetMorale - (effect / 2)); 
 
@@ -216,7 +244,7 @@ public class CityComponent : MonoBehaviour
             if (Data.population < populationCost) reason += "人口不足";
             return $"ERROR: 募兵に必要な資源が不足しています ({reason})。";
         }
-
+        Debug.Log($"募兵前人口: {Data.population}, 必要人口コスト: {populationCost}");
         // 2. コストの消費
         Data.goldStock -= goldCost;
         Data.foodStock -= foodCost;

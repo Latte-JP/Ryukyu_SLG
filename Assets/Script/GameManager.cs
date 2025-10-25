@@ -21,7 +21,16 @@ public class GameManager : MonoBehaviour
     [SerializeField] public List<GeneralData> allGenerals = new List<GeneralData>();
 
     // ★注: このリストには、UnityエディタでGeneralDataアセットをドラッグ＆ドロップで接続する必要があります。
-    
+    [Header("軍事ユニット追跡")]
+    public GameObject MilitaryUnitPrefab; // ★InspectorでMilitaryUnitPrefabを接続★
+    public List<UnitController> activeUnits = new List<UnitController>();
+
+    public void AddActiveUnit(UnitController unit)
+    {
+        activeUnits.Add(unit);
+        Debug.Log($"アクティブ部隊数: {activeUnits.Count}");
+    }
+
     void Awake()
     {
         // シングルトン設定
@@ -50,6 +59,11 @@ public class GameManager : MonoBehaviour
         foreach (var city in allCities)
         {
             ApplyCityUpdates(city.Data);
+        }
+        // ★★★ ターン開始時に全アクティブユニットの移動力をリセット ★★★
+        foreach (var unit in activeUnits)
+        {
+            unit.ResetMovement();
         }
 
         // 2. ターンを進行

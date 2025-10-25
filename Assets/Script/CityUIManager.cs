@@ -8,11 +8,13 @@ using UnityEditor.Experimental.GraphView;
 public class CityUIManager : MonoBehaviour
 {
     private CityComponent currentCity;
-    
+
     // UI要素をInspectorから接続
     //public Text cityNameText;
     //public Text goldText;
     public Button agricultureButton;
+    public Button commerceButton;
+    public Button tradeButton;
     public Button returnToMapButton;
 
     [Header("ステータステーブル")]
@@ -33,6 +35,9 @@ public class CityUIManager : MonoBehaviour
     public TMPro.TextMeshProUGUI unitCountText3;
     public TMPro.TextMeshProUGUI trainingLevelText3;
     public TMPro.TextMeshProUGUI moraleText3;
+    public TMPro.TextMeshProUGUI agricultureLevelText;
+    public TMPro.TextMeshProUGUI commerceLevelText;
+    public TMPro.TextMeshProUGUI tradeLevelText;
     // 訓練と交流と募兵のモードを定義
     public enum MilitaryActionMode { None, Training, MoraleBoost, Recruitment }
     // 現在のモードを記憶する変数
@@ -47,6 +52,7 @@ public class CityUIManager : MonoBehaviour
     public TextMeshProUGUI cityNameDisplay; // CityNameDisplayオブジェクトを接続
     public TextMeshProUGUI goldDisplay;     // GoldDisplayオブジェクトを接続
     public TextMeshProUGUI foodDisplay;     // FoodDisplayオブジェクトを接続
+    public TextMeshProUGUI populationDisplay;     // PopulationDisplayオブジェクトを接続
 
     [Header("軍事行動UI")]
     // ★この変数にTroopSelectionPanelを接続★
@@ -57,7 +63,7 @@ public class CityUIManager : MonoBehaviour
     [Header("部隊編成UI")]
     public GameObject deploymentPanel; // DeploymentPanelを接続
     //public Transform generalListContent; // GeneralListPanelの子要素を配置する親 (Content)
-    public TMP_InputField troopInputField; // TroopInput_Fieldを接続
+    public TMPro.TMP_InputField troopInputField; // TroopInput_Fieldを接続
     public Button deployButton; // DeployButtonを接続
 
     private GeneralData selectedGeneral; // 現在選択中の武将データ
@@ -107,6 +113,8 @@ public class CityUIManager : MonoBehaviour
     {
         // UIボタンのリスナー設定
         agricultureButton.onClick.AddListener(ExecuteAgriculture);
+        commerceButton.onClick.AddListener(ExecuteCommerce);
+        tradeButton.onClick.AddListener(ExecuteTrade);
         returnToMapButton.onClick.AddListener(ReturnToMap);
         // トグルが切り替わったときのイベントリスナーを設定
         swordToggle.onValueChanged.AddListener((isOn) => { if (isOn) selectedTroopIndex = 1; });
@@ -135,11 +143,31 @@ public class CityUIManager : MonoBehaviour
         goldDisplay.text = $"{data.goldStock:N0}";
 
         // 3. 食糧 (FoodStock)
-        foodDisplay.text = $"{data.foodStock:N0}"; 
-
+        foodDisplay.text = $"{data.foodStock:N0}";
+        // 4. 人口 (currentPopulation)
+        populationDisplay.text = $"{data.population:N0}";
         // TODO: 人口、農業レベル、文化度などの表示をここに追加
         // populationDisplay.text = $"人口: {data.population:N0}"; 
         // ★★★ 新しいステータスを更新 ★★★
+        if (agricultureLevelText != null)
+        {
+            // 農業レベルの値をUIに表示する
+            agricultureLevelText.text = data.agricultureLevel.ToString();
+        }
+        
+        if (commerceLevelText != null)
+        {
+            // 商業レベルの値をUIに表示する
+            commerceLevelText.text = data.commerceLevel.ToString();
+        }       
+        if (commerceLevelText != null)
+        {
+            // 交易レベルの値をUIに表示する
+            tradeLevelText.text = data.tradeLevel.ToString();
+        }       
+
+
+
         foodIncomeText.text      = $"{currentCity.Data.foodIncome}";
         foodConsumptionText.text = $"{currentCity.Data.foodConsumption}";
         goldIncomeText.text      = $"{currentCity.Data.goldIncome}";
@@ -159,11 +187,11 @@ public class CityUIManager : MonoBehaviour
         moraleText3.text          = $"{currentCity.Data.morale3}%";        
         // ... (ボタンリスナーの再設定などの既存ロジック)
     }
-//    public void UpdateCityUI()
-  //  {
+    //    public void UpdateCityUI()
+    //  {
     //    cityNameText.text = currentCity.Data.cityName;
-      //  goldText.text = "金: " + currentCity.Data.goldStock.ToString();
-        // TODO: 他のステータス表示もここに追加
+    //  goldText.text = "金: " + currentCity.Data.goldStock.ToString();
+    // TODO: 他のステータス表示もここに追加
     //}
 
     // 農業行動の実行
@@ -174,6 +202,40 @@ public class CityUIManager : MonoBehaviour
         currentCity.PerformAgricultureAction(cost, effect); // CityComponentのメソッド呼び出し
 
         UpdateCityUI(); // UIを再更新
+    }
+
+    // 商業行動（市場開拓）の実行
+    public void ExecuteCommerce()
+    {
+        // 商業のコストと効果を定義
+        int cost = 150;
+        int effect = 1;
+
+        // CityComponentに商業ロジックを処理させる
+        string result = currentCity.PerformCommerceAction(cost, effect);
+
+        // 成功・失敗メッセージをログに出力
+        Debug.Log($"市場開拓結果: {result}");
+
+        // UIを再更新
+        UpdateCityUI();
+    }
+    
+        // 交易行動（市場開拓）の実行
+    public void ExecuteTrade()
+    {
+        // 交易のコストと効果を定義
+        int cost = 150;
+        int effect = 1;
+
+        // CityComponentに交易ロジックを処理させる
+        string result = currentCity.PerformTradeAction(cost, effect);
+        
+        // 成功・失敗メッセージをログに出力
+        Debug.Log($"港整備結果: {result}");
+
+        // UIを再更新
+        UpdateCityUI();
     }
 
     // マップシーンに戻る
@@ -350,31 +412,41 @@ public class CityUIManager : MonoBehaviour
 
     public void FinalizeDeployment()
     {
-    if (selectedGeneral == null)
-    {
-        Debug.LogError("大将が選択されていません。");
-        return;
-    }
+        if (selectedGeneral == null)
+        {
+            Debug.LogError("大将が選択されていません。");
+            return;
+        }
     
-    int troopCount = 0;
-    // 兵数入力フィールドから値を取得し、数値に変換
-    if (!int.TryParse(troopInputField.text, out troopCount))
-    {
-        Debug.LogError("有効な兵数を入力してください。");
-        return;
-    }
+        int troopCount = 0;
+        // 兵数入力フィールドから値を取得し、数値に変換
+        if (!int.TryParse(troopInputField.text, out troopCount))
+        {
+            Debug.LogError("有効な兵数を入力してください。");
+            return;
+        }
 
-    // 選択された兵種インデックス (1, 2, or 3)
-    int troopIndex = selectedTroopIndex;
+        // 選択された兵種インデックス (1, 2, or 3)
+        int troopIndex = selectedTroopIndex;
 
-    // CityComponent.DeployTroop()の呼び出し
-    TroopData newTroop = currentCity.DeployTroop(selectedDeploymentGeneral, troopIndex, troopCount);
-    if (newTroop != null)
-    {
-        Debug.Log($"【編成成功】{newTroop.unitName} 部隊が出陣準備完了。");
-        // TODO: ここで部隊をマップ上の出陣地点などに配置するロジックを実行
-        deploymentPanel.SetActive(false);
-    }
+        // CityComponent.DeployTroop()の呼び出し
+        TroopData newTroop = currentCity.DeployTroop(selectedDeploymentGeneral, troopIndex, troopCount);
+        if (newTroop != null)
+        {
+            // 1. マップ上の配置座標を都市から取得 (CityComponentの座標を使用)
+            Vector3 deployPosition = currentCity.transform.position + Vector3.up * 0.5f; // 地面から少し浮かせる        
+            // 2. UnitPrefabを生成
+            GameObject unitObj = Instantiate(GameManager.Instance.MilitaryUnitPrefab, deployPosition, Quaternion.identity);
+            // 3. UnitControllerを取得し、初期化
+            UnitController unitController = unitObj.GetComponent<UnitController>();
+            if (unitController != null)
+            {
+                unitController.Initialize(newTroop, deployPosition, currentCity.Data.cityName);
+            }
+            Debug.Log($"【編成成功】{newTroop.unitName} 部隊が出陣準備完了。");
+            deploymentPanel.SetActive(false);
+        }
+
     }
 
     public void ExecuteTroopAction(int troopIndex)

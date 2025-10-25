@@ -10,16 +10,16 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f323651a8b63c0e48ae44b1c67b6a596, type: 3}
-  m_Name: Hanachi
+  m_Name: "\u5927\u91CC"
   m_EditorClassIdentifier: Assembly-CSharp::GeneralData
-  generalName: "\u6500\u5B89\u77E5"
-  generalNameKana: "\u306F\u3093\u3042\u3061"
-  allegiance: 1
-  leadership: 80
-  warfare: 90
+  generalName: "\u4ED6\u9B6F\u6BCE"
+  generalNameKana: "\u305F\u308D\u307E\u3044"
+  allegiance: 13
+  leadership: 70
+  warfare: 60
   politics: 50
   intelligence: 65
-  charm: 70
+  charm: 60
   culture: 60
   portraitImage: {fileID: 0}
   skill: 0

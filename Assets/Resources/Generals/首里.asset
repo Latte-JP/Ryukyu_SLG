@@ -10,19 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f323651a8b63c0e48ae44b1c67b6a596, type: 3}
-  m_Name: Taromai
+  m_Name: "\u9996\u91CC"
   m_EditorClassIdentifier: Assembly-CSharp::GeneralData
-  generalName: "\u4ED6\u9B6F\u6BCE"
-  generalNameKana: "\u305F\u308D\u307E\u3044"
-  allegiance: 13
-  leadership: 70
-  warfare: 60
-  politics: 50
-  intelligence: 65
-  charm: 60
-  culture: 60
+  generalName: "\u6B66\u5BE7"
+  generalNameKana: "\u3076\u306D\u3044"
+  allegiance: 2
+  leadership: 75
+  warfare: 70
+  politics: 65
+  intelligence: 70
+  charm: 70
+  culture: 65
   portraitImage: {fileID: 0}
-  skill: 0
+  skill: 4
   aptitudeSword: 1
   aptitudeBow: 3
   aptitudeMarine: 2
+  currentAssignedLocation: 1
