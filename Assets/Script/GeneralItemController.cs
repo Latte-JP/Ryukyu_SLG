@@ -7,7 +7,8 @@ public class GeneralItemController : MonoBehaviour
     // ★Inspectorで接続するUI要素★
     public Button selectButton;
     public RawImage portraitImage; // RawImageに変更
-    public TextMeshProUGUI nameText;
+
+    public TextMeshProUGUI largeNameText;
     public TextMeshProUGUI statsText;
 
     private GeneralData myGeneralData;
@@ -19,7 +20,7 @@ public class GeneralItemController : MonoBehaviour
         uiManager = manager;
 
         // 1. UI要素にデータを反映
-        nameText.text = general.generalName;
+        largeNameText.text = general.generalName;
         
         // 能力値を表示（統率力特化の設計を反映）
         statsText.text = $"統率:{general.leadership} 武力:{general.warfare} 知略:{general.intelligence}";
