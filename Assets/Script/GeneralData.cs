@@ -22,7 +22,7 @@ public enum Location
     Yomitanson, // 北山の城、読谷村城
     Nejame,     // 北山の城　根謝銘城（祭祀的）
     Arakawa,    // 北山の城　新川城
-    Urazoe,     // 中山の居城、浦添城
+    Shuri,     // 中山の居城、浦添城
     Katsuren,   // 中山の城　勝連城。三大
     Chatan,     // 中山の城　北谷城
     Zakimi,     // 中山の城　座喜味城（有名な武将無し。三大）
@@ -30,9 +30,8 @@ public enum Location
     Yamada,     // 中山の城　山田城（有名な武将無し）
     Nakagusuku, // 中山の城　中城城（有名な武将無し。三大）
     Sashiki,    // 南山の尚家の城　佐敷城
-    Shimashiri  // 南山の居城。島尻大里城
+    Osato // 南山の居城。島尻大里城
 }
-
 
 
 // Unityメニューの [Assets] -> [Create] -> [Game Data] -> [General Data] からデータを作成可能にする

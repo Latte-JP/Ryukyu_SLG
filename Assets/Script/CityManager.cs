@@ -5,19 +5,19 @@ using UnityEngine.SceneManagement;
 
 public class CityManager : MonoBehaviour
 {
-    public GameObject cityPrefab;
-    private readonly Vector3 ICON_SCALE = new Vector3(0.3f, 0.3f, 0.3f);
+  public GameObject cityPrefab;
+  private readonly Vector3 ICON_SCALE = new Vector3(0.3f, 0.3f, 0.3f);
 
-    // ★修正点1: 位置情報とデータをDictionaryで結合する新しい構造★
-    // データを渡すためのシンプルな構造体
-    private struct CitySetup
-    {
-        public Vector3 location;
-        public CityData data;
-    }
+  // ★修正点1: 位置情報とデータをDictionaryで結合する新しい構造★
+  // データを渡すためのシンプルな構造体
+  private struct CitySetup
+  {
+    public Vector3 location;
+    public CityData data;
+  }
 
-    // 城の初期データと座標を一つの構造で管理
-    private readonly Dictionary<string, CitySetup> cityConfigurations = new Dictionary<string, CitySetup>()
+  // 城の初期データと座標を一つの構造で管理
+  private readonly Dictionary<string, CitySetup> cityConfigurations = new Dictionary<string, CitySetup>()
     {
         // キー: 内部名, 値: (座標, CityData)
         {"今帰仁", new CitySetup{ location = new Vector3(-0.34f, 0.1f, 2.34f),
@@ -100,72 +100,84 @@ public class CityManager : MonoBehaviour
         },
     };
 
-    void Start()
+  void Start()
+  {
+    InstantiateCities();
+  }
+
+  void InstantiateCities()
+  {
+    if (GameManager.Instance != null)
     {
-        InstantiateCities();
+      // ★修正点2: GameManagerのリストを最初にクリア★
+      GameManager.Instance.allCities.Clear();
     }
 
-    void InstantiateCities()
+    // ★修正点3: 一つのループで生成、データ割り当て、登録を完了★
+    foreach (var config in cityConfigurations)
     {
-        if (GameManager.Instance != null)
-        {
-            // ★修正点2: GameManagerのリストを最初にクリア★
-            GameManager.Instance.allCities.Clear(); 
-        }
+      // 1. アイコンのプレファブを生成 (config.Value.locationを使用)
+      GameObject cityIcon = Instantiate(cityPrefab, config.Value.location, Quaternion.identity);
 
-        // ★修正点3: 一つのループで生成、データ割り当て、登録を完了★
-        foreach (var config in cityConfigurations)
-        {
-            // 1. アイコンのプレファブを生成 (config.Value.locationを使用)
-            GameObject cityIcon = Instantiate(cityPrefab, config.Value.location, Quaternion.identity);
-            
-            // 2. 親オブジェクトを設定
-            cityIcon.transform.SetParent(transform);
-            cityIcon.transform.localScale = ICON_SCALE;
+      // 2. 親オブジェクトを設定
+      cityIcon.transform.SetParent(transform);
+      cityIcon.transform.localScale = ICON_SCALE;
 
-            // 3. オブジェクトに名前を設定
-            cityIcon.name = "City: " + config.Key; // 例: "City: 今帰仁"
+      // 3. オブジェクトに名前を設定
+      cityIcon.name = "City: " + config.Key; // 例: "City: 今帰仁"
 
-            // 4. CityComponentを取得し、データを初期化 (config.Value.dataを使用)
-            CityComponent cityComp = cityIcon.AddComponent<CityComponent>();
-            cityComp.InitializeCity(config.Value.data);
+      // 補助関数: CityManagerクラスの外側（または内側）に定義が必要です。
+      Location initialLocationID = GetLocationEnum(config.Key);
+      // CityDataのインスタンスにLocationIDを割り当てる (cityConfigurationsではできなかったため)
+      config.Value.data.cityLocationID = initialLocationID;
 
-            // --- [武将初期配置ロジック] ---
-            // 1. Resourcesフォルダから武将データをロード (各城のキーと同じ名前のアセットをロード)
-            GeneralData initialGeneral = Resources.Load<GeneralData>("Generals/" + config.Key); 
-            // 例: Resources/Generals/今帰仁.asset をロード
-            if (initialGeneral != null)
-            {
-                // 2. データをコピーしてCityDataに城代として割り当て
-                // ★Instantiate(initialGeneral)で、アセットのコピーを生成し、データを城に紐づけます★
-                cityComp.Data.governingGeneral = Instantiate(initialGeneral);
+      // 4. CityComponentを取得し、データを初期化 (config.Value.dataを使用)
+      CityComponent cityComp = cityIcon.AddComponent<CityComponent>();
+      cityComp.InitializeCity(config.Value.data);
 
-        // 3. 武将の現在配置場所を設定
-        //cityComp.Data.governingGeneral.currentAssignedCity = cityComp.Data.cityName; 
-        // ★★★ 修正後：Location Enum を使用するロジックに変更 ★★★
-        // 最初に城代として配置された武将は、その城のLocationIDにいるとマークする
-        cityComp.Data.governingGeneral.currentAssignedLocation = cityComp.Data.cityLocationID;
-                
-                
-                // ログに出力（デバッグ用）
-                Debug.Log($"武将 {initialGeneral.generalName} を {cityComp.Data.cityName} に初期配置しました。");
-            }
-            else
-            {
-                Debug.LogWarning($"警告: 城 {config.Key} の初期武将データが見つかりませんでした。");
-            }
-            // --- [武将初期配置ロジック 終了] ---
+      // --- [武将初期配置ロジック] ---
+      // 1. Resourcesフォルダから武将データをロード (各城のキーと同じ名前のアセットをロード)
+      GeneralData initialGeneral = Resources.Load<GeneralData>("Generals/" + config.Key);
+      // 例: Resources/Generals/今帰仁.asset をロード
+      if (initialGeneral != null)
+      {
+        // データをコピーしてCityDataに城代として割り当て
+        cityComp.Data.governingGeneral = Instantiate(initialGeneral);
 
-
-            // 5. GameManagerに登録
-            if (GameManager.Instance != null)
-            {
-                GameManager.Instance.allCities.Add(cityComp);
-            }
-        }
+        // 武将の現在配置場所を設定 (cityComp.Data.cityLocationIDは、今設定した正しいIDを持っている！)
+        cityComp.Data.governingGeneral.currentAssignedLocation = cityComp.Data.cityLocationID;        // ★★★ 修正後：Location Enum を使用するロジックに変更 ★★★
         
-        Debug.Log($"[CityManager] 全{cityConfigurations.Count}個の城の生成と登録が完了しました。");
+        // 最初に城代として配置された武将は、その城のLocationIDにいるとマークする
+        //cityComp.Data.governingGeneral.currentAssignedLocation = cityComp.Data.cityLocationID;
 
-        // ★修正点4: 不要なFindObjectsOfTypeを削除 (上記で全て登録済みのため)
+
+        // ログに出力（デバッグ用）
+        Debug.Log($"武将 {initialGeneral.generalName} を {cityComp.Data.cityName} に初期配置しました。");
+      }
+      else
+      {
+        Debug.LogWarning($"警告: 城 {config.Key} の初期武将データが見つかりませんでした。");
+      }
+      // --- [武将初期配置ロジック 終了] ---
+
+
+      // 5. GameManagerに登録
+      if (GameManager.Instance != null)
+      {
+        GameManager.Instance.allCities.Add(cityComp);
+      }
     }
+
+    Debug.Log($"[CityManager] 全{cityConfigurations.Count}個の城の生成と登録が完了しました。");
+  }
+  private Location GetLocationEnum(string cityKey)
+  {
+    switch (cityKey)
+    {
+      case "今帰仁": return Location.Nakijin;
+      case "首里": return Location.Shuri;
+      case "大里": return Location.Osato;
+      default: return Location.None;
+    }
+  }
 }

@@ -67,6 +67,8 @@ public class CityUIManager : MonoBehaviour
     public Button deployButton; // DeployButtonを接続
 
     private GeneralData selectedGeneral; // 現在選択中の武将データ
+    public GameObject generalListPanel;
+    public GameObject troopInputPanel;
 
     [Header("編成リスト用参照")]
     public GameObject generalItemPrefab; // GeneralItemPrefabを接続
@@ -489,10 +491,23 @@ public class CityUIManager : MonoBehaviour
     public void SetSelectedGeneral(GeneralData general)
     {
         selectedDeploymentGeneral = general;
-    
+
         // 選択された武将の情報を画面の別の場所（例: 確定エリア）に表示
         // (例: finalGeneralNameText.text = general.generalName;)
-    
+        // (A) 武将リストパネルを非表示にする (Scroll View自体、またはその親)
+        if (generalListContent != null)
+        {
+            // ScrollViewのContentの親を非表示にするか、Contentの上にあるPanelを非表示にします。
+            // ここでは、Scroll View全体（GeneralScrollView）を非表示にすることを推奨
+            generalListContent.parent.parent.gameObject.SetActive(false); // Hierarchy構造に合わせて修正が必要
+        }
+        // (B) 兵数入力UI（TroopInputPanelなど）を表示する
+        if (troopInputPanel != null) // TroopInputPanelをCityUIManagerに追加し接続が必要
+        {
+            generalListPanel.SetActive(false);  // 武将リストを非表示
+            troopInputPanel.SetActive(true);    // 兵数入力を表示
+        }
+
         Debug.Log($"大将として {general.generalName} を選択しました。");
     }
 }

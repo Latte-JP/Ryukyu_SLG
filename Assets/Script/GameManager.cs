@@ -163,13 +163,15 @@ public class GameManager : MonoBehaviour
             return new List<GeneralData>();
         }
 
-        // 2. ★★★ 修正箇所：targetLocationIDを定義し、値を取得 ★★★
+        // 2. 検索対象のLocationID (Enum) を取得
+        // ★このIDに基づいてフィルタリングします★
         Location targetLocationID = targetCity.Data.cityLocationID;
-        // ★★★ ここまで ★★★
 
         // 3. 全武将リストから、LocationIDが一致する武将をフィルタリング
+        // GeneralData.currentAssignedLocation (Location Enum) と targetLocationID (Location Enum) を直接比較
         return allGenerals
-            .Where(g => g.currentAssignedLocation == targetLocationID) 
+            .Where(g => g.currentAssignedLocation == targetLocationID)
             .ToList();
+        
     }
 }
