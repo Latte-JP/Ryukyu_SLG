@@ -126,14 +126,16 @@ public class CityManager : MonoBehaviour
       // 3. オブジェクトに名前を設定
       cityIcon.name = "City: " + config.Key; // 例: "City: 今帰仁"
 
-      // 補助関数: CityManagerクラスの外側（または内側）に定義が必要です。
-      Location initialLocationID = GetLocationEnum(config.Key);
-      // CityDataのインスタンスにLocationIDを割り当てる (cityConfigurationsではできなかったため)
-      config.Value.data.cityLocationID = initialLocationID;
-
-      // 4. CityComponentを取得し、データを初期化 (config.Value.dataを使用)
+      // ★★★ 修正箇所：CityData生成時にLocationIDを特定・設定 ★★★
+      Location cityLocID = GetLocationByCityKey(config.Key);
+      // 4. CityComponentを取得し、データを初期化
       CityComponent cityComp = cityIcon.AddComponent<CityComponent>();
-      cityComp.InitializeCity(config.Value.data);
+      // --- [CityDataのコピーと修正] ---
+      // config.Value.dataのコピーを作成し、LocationIDを割り当てる
+      CityData initialData = config.Value.data;
+      initialData.cityLocationID = cityLocID; // ★LocationIDを割り当て★
+        
+      cityComp.InitializeCity(initialData);
 
       // --- [武将初期配置ロジック] ---
       // 1. Resourcesフォルダから武将データをロード (各城のキーと同じ名前のアセットをロード)
@@ -144,8 +146,9 @@ public class CityManager : MonoBehaviour
         // データをコピーしてCityDataに城代として割り当て
         cityComp.Data.governingGeneral = Instantiate(initialGeneral);
 
-        // 武将の現在配置場所を設定 (cityComp.Data.cityLocationIDは、今設定した正しいIDを持っている！)
-        cityComp.Data.governingGeneral.currentAssignedLocation = cityComp.Data.cityLocationID;        // ★★★ 修正後：Location Enum を使用するロジックに変更 ★★★
+        // 3. 武将の現在配置場所を設定
+        // cityComp.Data.cityLocationIDは、今設定した正しいLocationIDを持っている！
+        cityComp.Data.governingGeneral.currentAssignedLocation = cityComp.Data.cityLocationID;        
         
         // 最初に城代として配置された武将は、その城のLocationIDにいるとマークする
         //cityComp.Data.governingGeneral.currentAssignedLocation = cityComp.Data.cityLocationID;
@@ -170,14 +173,15 @@ public class CityManager : MonoBehaviour
 
     Debug.Log($"[CityManager] 全{cityConfigurations.Count}個の城の生成と登録が完了しました。");
   }
-  private Location GetLocationEnum(string cityKey)
+  private Location GetLocationByCityKey(string cityKey)
   {
-    switch (cityKey)
-    {
-      case "今帰仁": return Location.Nakijin;
-      case "首里": return Location.Shuri;
-      case "大里": return Location.Osato;
-      default: return Location.None;
-    }
+      // ★Location Enumの要素名とcityKeyをマッピング★
+      switch (cityKey)
+      {
+          case "今帰仁": return Location.Nakijin; 
+          case "首里": return Location.Shuri;    
+          case "大里": return Location.Osato;      
+          default: return Location.None;
+      }
   }
 }
