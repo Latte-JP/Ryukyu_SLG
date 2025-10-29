@@ -14,6 +14,16 @@ public class TroopData
     public int training;        // 訓練度 (0-100)
     public int morale;          // 士気 (0-100)
 
+    // 他のスクリプト（DeployedUnitItemController.cs, CityComponent.cs）で
+    // 期待されているプロパティを定義します。
+    
+    // 【重要】兵数プロパティを 'unitCount' で定義（既存の 'count' を使わない場合、こちらに統一します）
+    // 現状、CityComponentで使われているため、この名前が必要です。
+    public int unitCount; 
+    
+    // 兵種インデックス (CityComponentのReturnTroopsメソッドで必要)
+    public int troopTypeIndex;
+
     // 戦闘能力値
     public int attack;          // 攻撃力
     public int defense;         // 防御力
@@ -26,4 +36,7 @@ public class TroopData
     {
         // 初期化ロジック
     }
+
+    
+
 }

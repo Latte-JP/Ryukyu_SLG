@@ -50,7 +50,7 @@ public class DeployedUnitItemController : MonoBehaviour
     /// </summary>
     /// <param name="troopToRemove">削除する部隊データ</param>
     /// <param name="itemObject">削除するUIオブジェクト</param>
-    public void RemoveStagedTroop(TroopData troopToRemove, GameObject itemObject)
+    /*public void RemoveStagedTroop(TroopData troopToRemove, GameObject itemObject)
     {
         if (stagedTroops.Contains(troopToRemove))
         {
@@ -70,5 +70,5 @@ public class DeployedUnitItemController : MonoBehaviour
 
             Debug.Log($"【編成解除】{troopToRemove.general.generalName} の部隊を解除し、兵を都市に戻しました。");
         }
-    }
+    }*/
 }

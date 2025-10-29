@@ -45,7 +45,7 @@ public class CityUIManager : MonoBehaviour
     public TextMeshProUGUI populationDisplay;
     public TextMeshProUGUI agricultureLevelText;
     public TextMeshProUGUI commerceLevelText;
-    public TextMeshProProUGUI tradeLevelText;
+    public TextMeshProUGUI tradeLevelText;
     // 兵種別ステータス表示
     public TMPro.TextMeshProUGUI unitTypeText1;
     public TMPro.TextMeshProUGUI unitCountText1;
@@ -160,12 +160,48 @@ public class CityUIManager : MonoBehaviour
         
         Debug.Log($"大将として {general.generalName} を選択しました。");
     }
-    
+
     // ★★★ 部隊の確定と出陣 ★★★
     public void FinalizeDeployment()
     {
         // ... (FinalizeDeploymentメソッド内のロジックは省略) ...
     }
+    
+    /// <summary>
+    /// 右側の出陣リストから部隊を外し、武将と兵数を都市に戻す。
+    /// このメソッドは DeployedUnitItemController のボタンクリックによって呼び出される。
+    /// </summary>
+    /// <param name="troopToRemove">削除する部隊データ</param>
+    /// <param name="itemObject">削除するUIオブジェクト</param>
+    public void RemoveStagedTroop(TroopData troopToRemove, GameObject itemObject)
+    {
+        // 1. 【内部リストから削除】: CityUIManagerが持つリストから削除
+        if (stagedTroops.Contains(troopToRemove))
+        {
+            stagedTroops.Remove(troopToRemove);
+
+            // 2. 【都市に兵を返却】: currentCity変数（クラスの先頭で定義済み）を使用
+            // ※ 注: currentCityクラスにReturnTroopsメソッドが実装されている必要があります
+            if (currentCity != null)
+            {
+                currentCity.ReturnTroops(troopToRemove); 
+            }
+            
+            // 3. 【UIの削除】
+            Destroy(itemObject);
+
+            // 4. 【左リストの更新】: 武将がフリーになったため、編成リストに再表示
+            LoadGeneralList(); 
+
+            Debug.Log($"【編成解除】{troopToRemove.general.generalName} の部隊を解除し、兵を都市に戻しました。");
+        }
+        else
+        {
+            Debug.LogWarning("解除しようとした部隊データが stagedTroops リストに見つかりませんでした。");
+        }
+    }
+
+
 
     // ... (補助関数 GetUnitPrefabByTroopIndex は省略) ...
 
