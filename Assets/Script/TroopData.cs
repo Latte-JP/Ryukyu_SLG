@@ -10,7 +10,7 @@ public class TroopData
 
     // 基本情報
     public string unitName;     // 兵種名
-    public int count;           // 兵数
+    public int count;           // 兵数(unitCountに統一　※10行ぐらい下にある)
     public int training;        // 訓練度 (0-100)
     public int morale;          // 士気 (0-100)
 

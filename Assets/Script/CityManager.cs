@@ -109,7 +109,7 @@ public class CityManager : MonoBehaviour
   {
     if (GameManager.Instance != null)
     {
-      // ★修正点2: GameManagerのリストを最初にクリア★
+      // GameManagerのリストを最初にクリア
       GameManager.Instance.allCities.Clear();
     }
 
@@ -126,15 +126,16 @@ public class CityManager : MonoBehaviour
       // 3. オブジェクトに名前を設定
       cityIcon.name = "City: " + config.Key; // 例: "City: 今帰仁"
 
-      // ★★★ 修正箇所：CityData生成時にLocationIDを特定・設定 ★★★
-      Location cityLocID = GetLocationByCityKey(config.Key);
+      // --- [CityDataの初期設定] ---
+      CityData initialData = config.Value.data; // CityDataインスタンスを取得
+
+      // ★★★ 修正箇所1: LocationIDをCityDataインスタンスに割り当てる ★★★
+      // フィルタリングに必須のLocationIDを設定します
+      initialData.cityLocationID = GetLocationByCityKey(config.Key);
+
       // 4. CityComponentを取得し、データを初期化
+      // InitializeCityに渡すinitialDataは、cityLocationIDを既に持っている状態！
       CityComponent cityComp = cityIcon.AddComponent<CityComponent>();
-      // --- [CityDataのコピーと修正] ---
-      // config.Value.dataのコピーを作成し、LocationIDを割り当てる
-      CityData initialData = config.Value.data;
-      initialData.cityLocationID = cityLocID; // ★LocationIDを割り当て★
-        
       cityComp.InitializeCity(initialData);
 
       // --- [武将初期配置ロジック] ---
@@ -143,31 +144,24 @@ public class CityManager : MonoBehaviour
       // 例: Resources/Generals/今帰仁.asset をロード
       if (initialGeneral != null)
       {
-        // データをコピーしてCityDataに城代として割り当て
-        cityComp.Data.governingGeneral = Instantiate(initialGeneral);
+          // データをコピーしてCityDataに城代として割り当て
+          cityComp.Data.governingGeneral = Instantiate(initialGeneral);
 
-        // 3. 武将の現在配置場所を設定
-        // cityComp.Data.cityLocationIDは、今設定した正しいLocationIDを持っている！
-        cityComp.Data.governingGeneral.currentAssignedLocation = cityComp.Data.cityLocationID;        
-        
-        // 最初に城代として配置された武将は、その城のLocationIDにいるとマークする
-        //cityComp.Data.governingGeneral.currentAssignedLocation = cityComp.Data.cityLocationID;
+          // 5. 武将の現在配置場所を設定 (正しいLocationIDを参照)
+          cityComp.Data.governingGeneral.currentAssignedLocation = cityComp.Data.cityLocationID;
 
-
-        // ログに出力（デバッグ用）
-        Debug.Log($"武将 {initialGeneral.generalName} を {cityComp.Data.cityName} に初期配置しました。");
+          Debug.Log($"武将 {initialGeneral.generalName} を {cityComp.Data.cityName} に初期配置しました。");
       }
       else
       {
-        Debug.LogWarning($"警告: 城 {config.Key} の初期武将データが見つかりませんでした。");
+          Debug.LogWarning($"警告: 城 {config.Key} の初期武将データが見つかりませんでした。");
       }
       // --- [武将初期配置ロジック 終了] ---
 
-
-      // 5. GameManagerに登録
+      // 6. GameManagerに登録
       if (GameManager.Instance != null)
       {
-        GameManager.Instance.allCities.Add(cityComp);
+          GameManager.Instance.allCities.Add(cityComp);
       }
     }
 
