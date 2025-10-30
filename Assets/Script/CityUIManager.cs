@@ -339,6 +339,78 @@ public class CityUIManager : MonoBehaviour
 
     public void FinalizeWarlordAssignment(GeneralData selectedWarlord, string sector)
     {
+        // 0. 現在の都市コンポーネントを取得 (currentCityはCityComponent型と仮定)
+        CityComponent targetCity = currentCity;
+        // 1. コストと効果のパラメータを定義
+        int cost = 0;
+        int incomeIncrease = 0;
+        int baseAbility = 0; // 費用と効果の基準となる武将能力値
+        // 2. セクター（内政種類）に基づき、コストと能力値を決定
+        if (sector == "Agriculture") // 農地開拓
+        {
+            cost = 100; // 仮の開拓費
+            baseAbility = selectedWarlord.politicalAbility; // 政治力を利用
+        }
+        else if (sector == "Commerce") // 市場開発
+        {
+            cost = 120; // 仮の開発費
+            baseAbility = selectedWarlord.intelligence; // 知略を利用
+        }
+        else // その他の内政 (必要に応じて追加)
+        {
+            Debug.LogError("未知の内政セクター: " + sector);
+            return;
+        }
+
+        // 3. コストの支払い確認
+        if (GameManager.Instance.money < cost)
+        {
+            // 金が足りない場合の処理
+            Debug.Log("金が不足しています。任命をキャンセルします。");
+            // UIでエラーメッセージを表示する処理 (オプション)
+            return;
+        }
+
+        // 4. 金の減少 (消費)
+        GameManager.Instance.money -= cost;
+
+        // 5. 収入増加量の計算
+        // 収入増加 = 基本能力値 / 10 + 係数 (例として1.5倍)
+        incomeIncrease = (int)(baseAbility * 1.5f);
+
+        // 6. 収入の増加 (効果の発動)
+        if (sector == "Agriculture")
+        {
+            // 食糧収入の増加
+            targetCity.Data.foodIncome += incomeIncrease;
+
+            // 農業レベルを武将の能力値に基づいて上昇させるロジック（以前の実装を再利用）
+            GameManager.Instance.TryLevelUp(targetCity, "Agriculture", baseAbility);
+
+            Debug.Log($"{targetCity.Data.cityName} の農業収入が {incomeIncrease} 増加しました。");
+        }
+        else if (sector == "Commerce")
+        {
+            // 金収入の増加
+            targetCity.Data.goldIncome += incomeIncrease;
+
+            // 商業レベルを武将の能力値に基づいて上昇させるロジック
+            GameManager.Instance.TryLevelUp(targetCity, "Commerce", baseAbility);
+
+            Debug.Log($"{targetCity.Data.cityName} の商業収入が {incomeIncrease} 増加しました。");
+        }
+
+        // 7. 武将の任命状態を更新 (この武将は今ターン活動済みとする)
+        selectedWarlord.isBusy = true; // 仮のフラグ設定
+
+        // 8. パネルを閉じる
+        warlordSelectionPanel.SetActive(false);
+
+        // 9. UIの更新をGameManagerに要求 (全体の資源表示を更新)
+        GameManager.Instance.UpdateAllUI(); // 仮のメソッド名
+    }
+    
+    /*
         // 1. 担当武将を任命
         // TODO: ここで GameManager.currentAgricultureWarlord = selectedWarlord のような割り当てロジックが必要
         
@@ -356,7 +428,7 @@ public class CityUIManager : MonoBehaviour
         // logMessageText.text = log; // ログ表示
         warlordSelectionPanel.SetActive(false);
         UpdateCityUI();
-    }
+    }*/
 
 
     

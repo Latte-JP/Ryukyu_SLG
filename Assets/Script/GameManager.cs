@@ -37,7 +37,8 @@ public class GameManager : MonoBehaviour
     public GeneralData currentAgricultureWarlord;
     public GeneralData currentCommerceWarlord;
     public GeneralData currentTradeWarlord;
-
+    [Header("ゲーム資源")]
+    public int playerMoney = 0; // ★プレイヤーが所有する金 (playerMoney)★
 
     public void AddActiveUnit(UnitController unit)
     {
@@ -229,7 +230,7 @@ public class GameManager : MonoBehaviour
 
         // もし selectedCityName が "首里" なら、cityNameに "首里"を含むオブジェクトを探す
     }
-    
+
     /// <summary>
     /// 指定された都市に現在配置されている武将のリストを取得します。
     /// </summary>
@@ -256,6 +257,21 @@ public class GameManager : MonoBehaviour
         return allGenerals
             .Where(g => g.currentAssignedLocation == targetLocationID)
             .ToList();
-        
+
     }
+
+
+
+
+
+    public void TryLevelUp(CityComponent city, string sector, int ability)
+    {
+        // レベルアップ判定とCityDataのレベル更新ロジック
+        // 例: city.Data.agricultureLevel += 1;
+    }
+    public void UpdateAllUI()
+    {
+        // 画面上の金や食糧の表示を更新するロジック
+    }
+
 }

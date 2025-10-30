@@ -26,6 +26,7 @@ public class CityData
     public int foodIncome;      // 食糧収入 (毎ターン)
     public int goldConsumption; // 金消費 (毎ターン)
     public int goldIncome;      // 金収入 (毎ターン)
+
     [Header("軍事パラメーター1")]
     public string unitType1;     // 兵種（例: "剣兵", "海人隊", "雑兵"）
     public int unitCount1;       // 兵数

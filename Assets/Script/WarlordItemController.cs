@@ -28,7 +28,7 @@ public class WarlordItemController : MonoBehaviour
         selectButton.onClick.AddListener(OnWarlordSelected);
     }
     
-    private void OnWarlordSelected()
+    public void OnWarlordSelected()
     {
         // 担当武将を任命し、パネルを閉じるロジックをUIManagerに委譲
         uiManager.FinalizeWarlordAssignment(myWarlordData, targetSector);

@@ -76,8 +76,11 @@ public class GeneralData : ScriptableObject
     // ★修正2: 新しい'Location'（所在地）フィールドを追加
     public Location currentAssignedLocation = Location.None;
 
-
+    [Header("内政能力と状態")]
+    public int politicalAbility; // ★政治力を利用 (以前のpolitics/intelligenceを統合した新しい能力)
+    public bool isBusy = false; // ★この武将が今ターン活動中かを示すフラグ★
     // ★ 指揮範囲の計算（戦闘時に使用）
+    
     public int GetCommandRange()
     {
         // 基本範囲（例: 3マス）+ 知略ボーナス
