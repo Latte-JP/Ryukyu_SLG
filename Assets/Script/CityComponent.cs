@@ -326,16 +326,28 @@ public class CityComponent : MonoBehaviour
     /// </summary>
     public void ReturnTroops(TroopData troop)
     {
+
+        int troopIndex = 0;
+        // 兵種名（unitName）に基づいてインデックスを取得するロジックが必要
+        if (troop.unitName == Data.unitType1) troopIndex = 1;
+        else if (troop.unitName == Data.unitType2) troopIndex = 2;
+        else if (troop.unitName == Data.unitType3) troopIndex = 3;
+
         // 部隊が使用していた兵種インデックスに応じて都市の兵数を増加させる
-        switch (troop.troopTypeIndex)
+    switch (troopIndex)
         {
-            case 1: Data.unitCount1 += troop.unitCount; break;
-            case 2: Data.unitCount2 += troop.unitCount; break;
-            case 3: Data.unitCount3 += troop.unitCount; break;
-            // ... 他の兵種があれば追加
+            case 1: Data.unitCount1 += troop.count; break;
+            case 2: Data.unitCount2 += troop.count; break;
+            case 3: Data.unitCount3 += troop.count; break;
         }
         
-        // 兵種を戻したので、UIを更新する必要があるかもしれません (TODO)
-        Debug.Log($"都市 {Data.cityName} に {troop.unitCount} の {troop.unitName} が戻されました。");
+        // GeneralDataの所在地を「在野」に戻す処理
+        if (troop.general != null)
+        {
+            // GeneralData.csにLocation.Noneが定義されている前提
+            troop.general.currentAssignedLocation = Location.None; 
+        }
+        
+        Debug.Log($"都市 {Data.cityName} に {troop.count} の {troop.unitName} が戻されました。");
     }
 }

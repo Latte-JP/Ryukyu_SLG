@@ -95,10 +95,51 @@ public class CityUIManager : MonoBehaviour
     {
         // ... (InitializeUIメソッド内のロジックは省略) ...
     }
-    
+
     public void UpdateCityUI()
     {
         // ... (UpdateCityUIメソッド内のロジックは省略) ...
+    }
+    public void ExecuteAgriculture() // ★必ず 'public' であることを確認★
+    {
+        int cost = 100;
+        int effect = 1;
+        currentCity.PerformAgricultureAction(cost, effect); 
+
+        UpdateCityUI(); // UIを再更新
+    }
+
+    // 商業行動（市場開拓）の実行
+    public void ExecuteCommerce() // ★必ず public であることを確認★
+    {
+        // 商業のコストと効果を定義
+        int cost = 150;
+        int effect = 1;
+
+        // CityComponentに商業ロジックを処理させる
+        string result = currentCity.PerformCommerceAction(cost, effect);
+
+        // 成功・失敗メッセージをログに出力
+        Debug.Log($"市場開拓結果: {result}");
+
+        // UIを再更新
+        UpdateCityUI();
+    }
+    // 交易行動（港整備）の実行
+    public void ExecuteTrade() // ★必ず public であることを確認★
+    {
+        // 交易のコストと効果を定義 (ExecuteTrade(string target)のロジックとは別)
+        int cost = 150;
+        int effect = 1;
+
+        // CityComponentに交易ロジックを処理させる
+        string result = currentCity.PerformTradeAction(cost, effect); 
+        
+        // 成功・失敗メッセージをログに出力
+        Debug.Log($"港整備結果: {result}");
+
+        // UIを再更新
+        UpdateCityUI();
     }
     
     // ... (ExecuteAgriculture, ExecuteCommerce, ExecuteTrade, ReturnToMap のメソッドは省略) ...
