@@ -7081,8 +7081,8 @@ MonoBehaviour:
   moraleText3: {fileID: 523884995}
   foodIncomeText: {fileID: 424836730}
   foodConsumptionText: {fileID: 806134396}
-  goldIncomeText: {fileID: 219158035}
-  goldConsumptionText: {fileID: 1482485475}
+  goldIncomeText: {fileID: 1632562269}
+  goldConsumptionText: {fileID: 1163896945}
   troopSelectionPanel: {fileID: 558370237}
   deploymentPanel: {fileID: 402773844}
   generalListPanel: {fileID: 1247943721}
@@ -9787,6 +9787,7 @@ MonoBehaviour:
   currentAgricultureWarlord: {fileID: 0}
   currentCommerceWarlord: {fileID: 0}
   currentTradeWarlord: {fileID: 0}
+  playerMoney: 0
 --- !u!64 &1235746176
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -11306,7 +11307,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 151, y: -2}
+  m_AnchoredPosition: {x: 151, y: 43}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1350402976
@@ -11381,7 +11382,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 150, y: 43}
+  m_AnchoredPosition: {x: 151, y: -4}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1362275576

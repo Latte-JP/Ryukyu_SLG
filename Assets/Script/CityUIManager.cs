@@ -349,12 +349,14 @@ public class CityUIManager : MonoBehaviour
         if (sector == "Agriculture") // 農地開拓
         {
             cost = 100; // 仮の開拓費
-            baseAbility = selectedWarlord.politicalAbility; // 政治力を利用
+            baseAbility = selectedWarlord.intelligence; // 知略を利用
+            Debug.Log($"知略は{baseAbility}です。");
         }
         else if (sector == "Commerce") // 市場開発
         {
             cost = 120; // 仮の開発費
-            baseAbility = selectedWarlord.intelligence; // 知略を利用
+            baseAbility = selectedWarlord.politics; // 政治力を利用
+            Debug.Log($"政治力は{baseAbility}です。");
         }
         else // その他の内政 (必要に応じて追加)
         {
@@ -363,7 +365,7 @@ public class CityUIManager : MonoBehaviour
         }
 
         // 3. コストの支払い確認
-        if (GameManager.Instance.money < cost)
+        if (targetCity.Data.goldStock < cost)
         {
             // 金が足りない場合の処理
             Debug.Log("金が不足しています。任命をキャンセルします。");
@@ -372,7 +374,8 @@ public class CityUIManager : MonoBehaviour
         }
 
         // 4. 金の減少 (消費)
-        GameManager.Instance.money -= cost;
+        Debug.Log($"金は現在{targetCity.Data.goldStock}です。コストは{cost}です。");
+        targetCity.Data.goldStock -= cost;
 
         // 5. 収入増加量の計算
         // 収入増加 = 基本能力値 / 10 + 係数 (例として1.5倍)
@@ -387,7 +390,7 @@ public class CityUIManager : MonoBehaviour
             // 農業レベルを武将の能力値に基づいて上昇させるロジック（以前の実装を再利用）
             GameManager.Instance.TryLevelUp(targetCity, "Agriculture", baseAbility);
 
-            Debug.Log($"{targetCity.Data.cityName} の農業収入が {incomeIncrease} 増加しました。");
+            Debug.Log($"知略は{baseAbility}です。{targetCity.Data.cityName} の農業収入が {incomeIncrease} 増加しました。");
         }
         else if (sector == "Commerce")
         {
@@ -405,9 +408,11 @@ public class CityUIManager : MonoBehaviour
 
         // 8. パネルを閉じる
         warlordSelectionPanel.SetActive(false);
+        // ★★★ 修正箇所: UIを強制更新する ★★★
+        UpdateCityUI();
 
         // 9. UIの更新をGameManagerに要求 (全体の資源表示を更新)
-        GameManager.Instance.UpdateAllUI(); // 仮のメソッド名
+        //GameManager.Instance.UpdateAllUI(); // 仮のメソッド名
     }
     
     /*

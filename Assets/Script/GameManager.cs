@@ -10,8 +10,11 @@ public class GameManager : MonoBehaviour
 
     [Header("ゲーム情報")]
     public int currentTurn = 1;
-    public int currentYear = 1400; // 例: 三山時代の開始年
+    //public int currentYear = 1400; // 例: 三山時代の開始年
     public int turnPerYear = 12; // 1年を12ターン（月）とする
+    [Header("ゲームターン管理")]
+    public int currentYear = 1422; // ゲーム開始年 (例: 1422年)
+    public int currentMonth = 1; // 1月開始
     
     // 全ての城コンポーネントを管理するためのリスト
     public List<CityComponent> allCities = new List<CityComponent>();
@@ -40,6 +43,8 @@ public class GameManager : MonoBehaviour
     [Header("ゲーム資源")]
     public int playerMoney = 0; // ★プレイヤーが所有する金 (playerMoney)★
 
+
+
     public void AddActiveUnit(UnitController unit)
     {
         activeUnits.Add(unit);
@@ -67,7 +72,7 @@ public class GameManager : MonoBehaviour
         Debug.Log($"ゲーム開始。管理対象の城: {allCities.Count} 箇所");
         // ★★★ 追記箇所: 毎秒の収入計算の開始 ★★★
         // 1秒ごとに収入計算を呼び出す
-        InvokeRepeating(nameof(GenerateIncome), 1f, 1f); 
+        //InvokeRepeating(nameof(GenerateIncome), 1f, 1f); 
         
         // ★★★ 追記箇所: 初期武将の割り当て (デバッグ用) ★★★
         // allGeneralsリストが空でなければ、リストの最初の3人を担当に割り当てる
@@ -80,55 +85,91 @@ public class GameManager : MonoBehaviour
     }
 
     // === ターン終了処理のメソッド ===
+    //public void EndTurn()
+    //{
+    //    // 1. 全ての城の毎月（ターン）処理を実行
+    //    foreach (var city in allCities)
+    //    {
+    //        ApplyCityUpdates(city.Data);
+    //    }
+    //    // ★★★ ターン開始時に全アクティブユニットの移動力をリセット ★★★
+    //    foreach (var unit in activeUnits)
+    //    {
+    //        unit.ResetMovement();
+    //    }
+    //    // 2. ターンを進行
+    //    currentTurn++;
+    //    if (currentTurn > turnPerYear)
+    //    {
+    //        currentTurn = 1;
+    //        currentYear++;
+    //        Debug.Log($"新しい年 {currentYear} が始まりました！");
+    //   }
+    //    Debug.Log($"ターン {currentTurn} が終了しました。");
+    //    // 3. UIの更新通知（後述のUIシステムで利用）
+    //    // UIManager.Instance.UpdateUI(); 
+    //}
+
+    // 4. ターン終了ボタンに割り当てるメソッドを実装
     public void EndTurn()
     {
-        // 1. 全ての城の毎月（ターン）処理を実行
-        foreach (var city in allCities)
-        {
-            ApplyCityUpdates(city.Data);
-        }
-        // ★★★ ターン開始時に全アクティブユニットの移動力をリセット ★★★
-        foreach (var unit in activeUnits)
-        {
-            unit.ResetMovement();
-        }
+        // ① ターンを進める (1ヶ月)
+        AdvanceMonth();
 
-        // 2. ターンを進行
-        currentTurn++;
-        if (currentTurn > turnPerYear)
-        {
-            currentTurn = 1;
-            currentYear++;
-            Debug.Log($"新しい年 {currentYear} が始まりました！");
-        }
-
-        Debug.Log($"ターン {currentTurn} が終了しました。");
-
-        // 3. UIの更新通知（後述のUIシステムで利用）
-        // UIManager.Instance.UpdateUI(); 
+        // ② 各町の収支計算を行う（以前作成したメソッド）
+        GenerateIncome();
+        
+        // ③ 武将の行動状態をリセット (内政の連続実行を防ぐ)
+        // 例えば、全武将の isBusy フラグを false に戻すロジックをここに追加（今後のステップで）。
+        
+        // ④ (後のステップで追加: AIの行動処理、軍事フェイズの進行など)
     }
+
+
 
     public void GenerateIncome()
     {
         // 農業収入 (食糧) の計算
         // 知略ボーナス: 知略 / 10
-        int baseFoodIncome = agricultureLevel * 10;
-        int warlordFoodBonus = (currentAgricultureWarlord != null) ? (currentAgricultureWarlord.intelligence / 10) : 0; 
-        food += baseFoodIncome + warlordFoodBonus;
-        
+        //int baseFoodIncome = agricultureLevel * 10;
+        //int warlordFoodBonus = (currentAgricultureWarlord != null) ? (currentAgricultureWarlord.intelligence / 10) : 0; 
+        //food += baseFoodIncome + warlordFoodBonus;
+
         // 商業収入 (金) の計算
         // 政治力ボーナス: 政治力 / 5
-        int baseMoneyFromCommerce = commerceLevel * 5;
-        int warlordCommerceBonus = (currentCommerceWarlord != null) ? (currentCommerceWarlord.politics / 5) : 0; 
+        //int baseMoneyFromCommerce = commerceLevel * 5;
+        //GeneralData commWarlord = currentCommerceWarlord;
+        //int warlordCommerceBonus = (commWarlord != null) ? (commWarlord.politics / 5) : 0;
         
         // 交易収入 (金) の計算
         // 交易はレベルのみで計算し、武将能力は成長に影響させます
-        int baseMoneyFromTrade = tradeLevel * 3;
+        //int baseMoneyFromTrade = tradeLevel * 3;
         
         // 合計の金収入
-        int totalMoneyIncome = baseMoneyFromCommerce + warlordCommerceBonus + baseMoneyFromTrade;
-        money += totalMoneyIncome;
+        //int totalMoneyIncome = baseMoneyFromCommerce + warlordCommerceBonus + baseMoneyFromTrade;
+        //money += totalMoneyIncome;
 
+    foreach (var cityComp in allCities)
+    {
+        CityData data = cityComp.Data;
+
+        // 1. 食糧の収支計算
+        // 収入 (foodIncome) から 消費 (foodConsumption) を引く
+        int netFoodIncome = data.foodIncome - data.foodConsumption;
+        data.foodStock += netFoodIncome;
+        
+        // 2. 金の収支計算
+        // 収入 (goldIncome) から 消費 (goldConsumption) を引く
+        int netGoldIncome = data.goldIncome - data.goldConsumption;
+        data.goldStock += netGoldIncome;
+
+        // 【安全策】もし資源がマイナスになった場合の処理（オプション）
+        // if (data.foodStock < 0) data.foodStock = 0;
+        // if (data.goldStock < 0) data.goldStock = 0;
+
+        Debug.Log($"{data.cityName} の食糧純収支: {netFoodIncome} (現在: {data.foodStock})");
+        Debug.Log($"{data.cityName} の金純収支: {netGoldIncome} (現在: {data.goldStock})");
+    }
         // UIを更新 (CityUIManagerに更新を指示)
         CityUIManager uiManager = FindObjectOfType<CityUIManager>();
         if (uiManager != null)
@@ -260,7 +301,20 @@ public class GameManager : MonoBehaviour
 
     }
 
-
+    // 3. ターンを進める処理（ヘルパーメソッド）を実装
+    private void AdvanceMonth()
+    {
+        currentMonth++;
+        if (currentMonth > 12)
+        {
+            currentMonth = 1;
+            currentYear++;
+        }
+        
+        // ★マップUIに日付を表示する場合、ここで更新ロジックを呼び出す★
+        
+        Debug.Log($"ターン終了: 現在 {currentYear}年 {currentMonth}月になりました。");
+    }
 
 
 
