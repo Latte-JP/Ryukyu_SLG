@@ -153,9 +153,9 @@ RectTransform:
   - {fileID: 1749936053}
   m_Father: {fileID: 1589262687}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 562, y: -654}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 300, y: 90}
   m_SizeDelta: {x: 320, y: 90}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &298688932
@@ -845,8 +845,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
   selectedCityName: 
   currentTurn: 1
-  currentYear: 1400
   turnPerYear: 12
+  currentYear: 1400
+  currentMonth: 1
   allCities: []
   allGenerals:
   - {fileID: 11400000, guid: 87233a069fa603e42ac14f108b4cf08a, type: 2}
