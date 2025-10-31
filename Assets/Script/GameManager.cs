@@ -191,7 +191,7 @@ public class GameManager : MonoBehaviour
         List<string> statNames = new List<string> { "leadership", "warfare", "politics", "intelligence", "charm", "culture" };
         string selectedStat = statNames[Random.Range(0, statNames.Count)];
         
-        // 反映 (switch文で実装)
+        // 成長の反映 (switch文で実装)
         switch (selectedStat)
         {
             case "leadership": warlord.leadership = Mathf.Min(100, warlord.leadership + increaseAmount); break;
@@ -201,7 +201,7 @@ public class GameManager : MonoBehaviour
             case "charm": warlord.charm = Mathf.Min(100, warlord.charm + increaseAmount); break;
             case "culture": warlord.culture = Mathf.Min(100, warlord.culture + increaseAmount); break;
         }
-
+        //ログで結果を報告
         return $"{warlord.generalName} の {selectedStat} が **+{increaseAmount}** 上昇しました！";
     }
 

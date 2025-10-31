@@ -358,6 +358,11 @@ public class CityUIManager : MonoBehaviour
             baseAbility = selectedWarlord.politics; // 政治力を利用
             Debug.Log($"政治力は{baseAbility}です。");
         }
+        else if (sector == "Trade") // ★★★ 修正箇所: Tradeセクターの処理を追加 ★★★
+        {
+            cost = 150; // 港整備のコスト
+            baseAbility = selectedWarlord.intelligence; // 交易は知略をベースとする
+        }
         else // その他の内政 (必要に応じて追加)
         {
             Debug.LogError("未知の内政セクター: " + sector);
@@ -401,6 +406,14 @@ public class CityUIManager : MonoBehaviour
             GameManager.Instance.TryLevelUp(targetCity, "Commerce", baseAbility);
 
             Debug.Log($"{targetCity.Data.cityName} の商業収入が {incomeIncrease} 増加しました。");
+        }
+        else if (sector == "Trade")
+        {
+            // 1. レベルアップと武将の能力値のランダム上昇を実行
+            string randomGrowthLog = GameManager.Instance.RandomlyImproveWarlordStat(selectedWarlord); 
+            GameManager.Instance.TryLevelUp(targetCity, "Trade", baseAbility); 
+
+            Debug.Log($"港整備成功。{randomGrowthLog}"); // 成長ログを表示
         }
 
         // 7. 武将の任命状態を更新 (この武将は今ターン活動済みとする)
