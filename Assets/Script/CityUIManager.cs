@@ -177,11 +177,21 @@ public class CityUIManager : MonoBehaviour
         goldConsumptionText.text = $"{currentCity.Data.goldConsumption}";
 
         // 軍事パラメーター
+        // unit1 剣兵の更新
         unitTypeText1.text = $"{currentCity.Data.unitType1}";
         unitCountText1.text = $"{currentCity.Data.unitCount1}";
         trainingLevelText1.text = $"{currentCity.Data.trainingLevel1}%";
         moraleText1.text = $"{currentCity.Data.morale1}%";
-        // (他の unit 2, 3 も同様に更新するロジックが続く)
+        // unit2 弓兵の更新
+        unitTypeText2.text = $"{currentCity.Data.unitType2}";
+        unitCountText2.text = $"{currentCity.Data.unitCount2}";
+        trainingLevelText2.text = $"{currentCity.Data.trainingLevel2}%";
+        moraleText2.text = $"{currentCity.Data.morale2}%";
+        // unit3 海人隊の更新
+        unitTypeText3.text = $"{currentCity.Data.unitType3}";
+        unitCountText3.text = $"{currentCity.Data.unitCount3}";
+        trainingLevelText3.text = $"{currentCity.Data.trainingLevel3}%";
+        moraleText3.text = $"{currentCity.Data.morale3}%";
     }
     /*public void ExecuteAgriculture() // ★必ず 'public' であることを確認★
     {
@@ -550,7 +560,71 @@ public class CityUIManager : MonoBehaviour
             UpdateCityUI();
         }
     }
+    // CityUIManager.cs の任意の場所（例：FinalizeDeployment() の後）に以下を追加
+
+    /// <summary>
+    /// 兵種選択パネルで兵種を選択した後、実行ボタンを押したときに呼ばれる想定のメソッド。
+    /// currentModeに基づき、訓練、交流、募兵のいずれかを実行する。
+    /// </summary>
+ // CityUIManager.cs の ExecuteTroopAction メソッドを修正
+
+/// <summary>
+/// 兵種選択パネルで兵種を選択した後、実行ボタンが押されたときに呼ばれる。
+/// 選択された兵種インデックス (1, 2, 3) を引数として受け取る。
+/// </summary>
+public void ExecuteTroopAction(int troopIndex) // ★★★ int troopIndex を引数として受け取るように修正 ★★★
+{
+    // currentCityがnullでないことを確認
+    if (currentCity == null)
+    {
+        Debug.LogError("CityComponentが見つかりません。");
+        return;
+    }
+
+    // 1. 現在のモードと選択された兵種インデックスを取得 (selectedTroopIndexの代わりに troopIndex を使用)
+    // 以前のロジックを、引数 troopIndex を使用するように調整
     
+    int recruitAmount = 500; 
+    int goldCost = 120;      
+    int foodCost = 100;      
+    string actionName = "";
+    string result = "";
+
+    // 2. モードに基づいた CityComponent のメソッドを実行
+    if (currentMode == MilitaryActionMode.Training)
+    {
+        result = currentCity.PerformTraining(troopIndex, 200, 10); 
+        actionName = "訓練";
+    }
+    else if (currentMode == MilitaryActionMode.MoraleBoost)
+    {
+        result = currentCity.PerformMoraleBoost(troopIndex, 80, 15);
+        actionName = "士気向上";
+    }
+    else if (currentMode == MilitaryActionMode.Recruitment)
+    {
+        result = currentCity.PerformRecruitment(troopIndex, goldCost, foodCost, recruitAmount);
+        actionName = "募兵";
+    }
+    else
+    {
+        Debug.LogWarning("軍事アクションモードが未設定です。");
+        return;
+    }
+
+    Debug.Log($"[{actionName}結果] {result}");
+
+    // 3. UIの更新
+    UpdateCityUI(); 
+
+    // 4. 後処理: パネル非表示とモードリセット
+    if (troopSelectionPanel != null)
+    {
+        troopSelectionPanel.SetActive(false);
+    }
+    currentMode = MilitaryActionMode.None; 
+}
+
     // CityUIManager.cs のクラス内に追加
 
 // 補助関数 (兵種インデックスに基づき、適切なユニットプレファブを返す)
