@@ -65,6 +65,9 @@ public class GeneralData : ScriptableObject
     [Header("特殊技能")]
     public SpecialSkill skill; // スキルを保有
 
+
+    
+
     // 兵種適性（A, B, C, D, Eの5段階を想定）
     // 1 = 剣兵, 2 = 弓兵, 3 = 海人隊
     public int aptitudeSword = 1;  // 剣兵適性 (1:S, 2:A, 3:B, 4:C, 5:D, 6:E)
@@ -78,6 +81,7 @@ public class GeneralData : ScriptableObject
 
     [Header("内政能力と状態")]
     public int politicalAbility; // ★政治力を利用 (以前のpolitics/intelligenceを統合した新しい能力)
+    public bool isRuler = false; // ★★★ 追加: この武将が特定の城の統治者であるか？ ★★★
     public bool isBusy = false; // ★この武将が今ターン活動中かを示すフラグ★
     // ★ 指揮範囲の計算（戦闘時に使用）
     

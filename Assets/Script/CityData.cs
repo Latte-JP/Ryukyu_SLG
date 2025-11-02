@@ -11,6 +11,7 @@ public class CityData
     // === 識別情報 ===
     public string cityName;
     public int ownerID; // 統治勢力のID (例: 1=北山, 2=中山, 3=南山, 0=中立)
+    public string rulerName = "（未定）";
     [Header("交易・技術データ")]
     public int tradeLevel = 0;         // 交易レベル (交易行動の効率に影響)
     public bool hasIronGunTech = false; // 鉄砲技術フラグ

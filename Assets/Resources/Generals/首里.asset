@@ -27,3 +27,6 @@ MonoBehaviour:
   aptitudeBow: 3
   aptitudeMarine: 2
   currentAssignedLocation: 5
+  politicalAbility: 0
+  isRuler: 1
+  isBusy: 0

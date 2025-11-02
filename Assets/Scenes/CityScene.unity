@@ -7061,6 +7061,7 @@ MonoBehaviour:
   mainMoraleButton: {fileID: 1768376086}
   mainRecruitmentButton: {fileID: 2032985253}
   cityNameDisplay: {fileID: 749691890}
+  warlordNameDisplay: {fileID: 1776386532}
   goldDisplay: {fileID: 2065321408}
   foodDisplay: {fileID: 339796863}
   populationDisplay: {fileID: 1293500224}

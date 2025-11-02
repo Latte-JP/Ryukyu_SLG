@@ -40,6 +40,7 @@ public class CityUIManager : MonoBehaviour
 
     [Header("Status UI")]
     public TextMeshProUGUI cityNameDisplay;
+    public TextMeshProUGUI warlordNameDisplay; // 城主名表示用
     public TextMeshProUGUI goldDisplay;
     public TextMeshProUGUI foodDisplay;
     public TextMeshProUGUI populationDisplay;
@@ -161,6 +162,18 @@ public class CityUIManager : MonoBehaviour
 
         // 基本情報
         cityNameDisplay.text = data.cityName;
+        // 城主名を表示するロジック
+        if (warlordNameDisplay != null)
+            {
+                // 1. 現在の都市のIDを取得
+                Location currentCityLocation = data.cityLocationID;
+                
+                // 2. その都市を統治している武将の名前を取得
+                string rulerName = FindRulerNameByLocation(currentCityLocation);
+                
+                warlordNameDisplay.text = $"城主: {rulerName}";
+            }
+        // 基本情報の続き
         goldDisplay.text = $"{data.goldStock:N0}";
         foodDisplay.text = $"{data.foodStock:N0}";
         populationDisplay.text = $"{data.population:N0}";
@@ -675,7 +688,20 @@ public void ExecuteTroopAction(int troopIndex) // ★★★ int troopIndex を�
             Debug.LogWarning("解除しようとした部隊データが stagedTroops リストに見つかりませんでした。");
         }
     }
+// 補助メソッド: 現在の都市の城主を探す
+    private string FindRulerNameByLocation(Location targetLocationID)
+    {
+        // GameManagerから全武将を取得し、フィルタリング
+        GeneralData ruler = GameManager.Instance.allGenerals
+            .FirstOrDefault(g => g.currentAssignedLocation == targetLocationID && g.isRuler == true);
 
+        if (ruler != null)
+        {
+            return ruler.generalName;
+        }
+        // 武将が見つからない、または城主が設定されていない場合は勢力名を表示
+        return "（城主不在）"; 
+    }
 
 
     // ... (補助関数 GetUnitPrefabByTroopIndex は省略) ...
