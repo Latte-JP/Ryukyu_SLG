@@ -7085,7 +7085,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CityUIManager
   backgroundRawImage: {fileID: 1018562571}
   backgroundTextures:
-  - {fileID: 2800000, guid: 70248042220b80c45af4b95c37e0db5e, type: 3}
+  - {fileID: 2800000, guid: 21eb38fdbefad7f42b221985b0d996b1, type: 3}
   - {fileID: 2800000, guid: 6d1b634e34c14064189984f4e870e004, type: 3}
   - {fileID: 2800000, guid: 8c6001729c35d0c4fa23bc7f10987eab, type: 3}
   textureIDs:
