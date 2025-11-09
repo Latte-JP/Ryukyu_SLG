@@ -16,7 +16,7 @@ public class CityUIManager : MonoBehaviour
 
     // 選択された武将データ
     private GeneralData selectedDeploymentGeneral;
-    
+
     // 選択された兵種インデックス (1, 2, or 3)
     private int selectedTroopIndex = 1; // ★★★ selectedTroopIndex の定義はここに統一 ★★★
 
@@ -32,7 +32,7 @@ public class CityUIManager : MonoBehaviour
     public Button tradeButton;
     public Button returnToMapButton;
     public Button deployButton;
-    
+
     // 軍事行動のメインボタン
     public Button mainTrainingButton;
     public Button mainMoraleButton;
@@ -69,20 +69,20 @@ public class CityUIManager : MonoBehaviour
     [Header("編成・部隊管理パネル")]
     public GameObject troopSelectionPanel;    // 訓練/交流/募兵用パネル
     public GameObject deploymentPanel;        // 全体編成パネル（出陣用）
-    
+
     // ★★★ 修正箇所：重複を削除し、ここに最終定義を統合 ★★★
     public GameObject generalListPanel;       // 左側：武将リストScrollViewを囲むパネル
     public GameObject troopInputPanel;        // 右側：兵数入力とDeployボタンを囲むパネル
-    
+
     public RectTransform generalListContent;   // 武将リストScrollViewのContent
     public GameObject generalItemPrefab;      // 武将リストアイテムのプレファブ
     public TMP_InputField troopInputField;    // 兵数入力フィールド
-    
+
     [Header("兵種トグル")]
     public Toggle swordToggle;
     public Toggle bowToggle;
     public Toggle navyToggle;
-    
+
     [Header("デプロイメント UI")]
     public Transform deployedContentParent; // ★新規: 右側 ScrollView の Content の Transform
     public GameObject deployedUnitItemPrefab; // ★新規: DeployedUnitItem.prefab への参照
@@ -106,12 +106,12 @@ public class CityUIManager : MonoBehaviour
         if (currentCity == null)
         {
             Debug.LogError("★エラー: 操作対象の城データが見つかりません！MapSceneで城が選択されたか確認してください。★");
-            return; 
+            return;
         }
-    
+
         InitializeUI();
         UpdateCityUI();
-        
+
         // 背景画像の切り替えロジック
         string targetID = currentCity.Data.backgroundSceneID;
         int index = textureIDs.IndexOf(targetID);
@@ -132,7 +132,7 @@ public class CityUIManager : MonoBehaviour
         agricultureButton.onClick.AddListener(ExecuteAgriculture);
         commerceButton.onClick.AddListener(ExecuteCommerce);
         tradeButton.onClick.AddListener(ExecuteTrade);
-        
+
         returnToMapButton.onClick.RemoveAllListeners(); // 二重登録を防ぐ
         returnToMapButton.onClick.AddListener(ReturnToMap);
 
@@ -164,15 +164,15 @@ public class CityUIManager : MonoBehaviour
         cityNameDisplay.text = data.cityName;
         // 城主名を表示するロジック
         if (warlordNameDisplay != null)
-            {
-                // 1. 現在の都市のIDを取得
-                Location currentCityLocation = data.cityLocationID;
-                
-                // 2. その都市を統治している武将の名前を取得
-                string rulerName = FindRulerNameByLocation(currentCityLocation);
-                
-                warlordNameDisplay.text = $"城主: {rulerName}";
-            }
+        {
+            // 1. 現在の都市のIDを取得
+            Location currentCityLocation = data.cityLocationID;
+
+            // 2. その都市を統治している武将の名前を取得
+            string rulerName = FindRulerNameByLocation(currentCityLocation);
+
+            warlordNameDisplay.text = $"城主: {rulerName}";
+        }
         // 基本情報の続き
         goldDisplay.text = $"{data.goldStock:N0}";
         foodDisplay.text = $"{data.foodStock:N0}";
@@ -218,13 +218,13 @@ public class CityUIManager : MonoBehaviour
     public void ExecuteAgriculture()
     {
         if (currentCity == null) return;
-        
+
         // ★★★ 修正箇所: レベルアップ処理を停止し、武将選択へ移行 ★★★
-        
+
         currentAssignmentSector = "Agriculture"; // 部門を設定
         LoadWarlordList("Agriculture");         // 武将リストを生成
         warlordSelectionPanel.SetActive(true);  // パネルを表示
-        
+
         // Debug.Log("武将選択モードに入りました。");
     }
 
@@ -248,13 +248,13 @@ public class CityUIManager : MonoBehaviour
     public void ExecuteCommerce()
     {
         if (currentCity == null) return;
-        
+
         // ★★★ 修正箇所: レベルアップ処理を停止し、武将選択へ移行 ★★★
-        
+
         currentAssignmentSector = "Commerce"; // 部門を設定
         LoadWarlordList("Commerce");         // 武将リストを生成
         warlordSelectionPanel.SetActive(true);  // パネルを表示
-        
+
         // Debug.Log("武将選択モードに入りました。");
     }
 
@@ -277,17 +277,17 @@ public class CityUIManager : MonoBehaviour
         // UIを再更新
         UpdateCityUI();
     }*/
-    
+
     public void ExecuteTrade()
     {
         if (currentCity == null) return;
-        
+
         // ★★★ 修正箇所: レベルアップ処理を停止し、武将選択へ移行 ★★★
-        
+
         currentAssignmentSector = "Trade"; // 部門を設定
         LoadWarlordList("Trade");         // 武将リストを生成
         warlordSelectionPanel.SetActive(true);  // パネルを表示
-        
+
         // Debug.Log("武将選択モードに入りました。");
     }
 
@@ -320,7 +320,7 @@ public class CityUIManager : MonoBehaviour
             // 初期状態：武将リストを表示し、入力パネルを非表示
             if (generalListPanel != null) generalListPanel.SetActive(true);
             if (troopInputPanel != null) troopInputPanel.SetActive(false);
-            LoadGeneralList();
+            LoadStagingList();
         }
     }
 
@@ -433,8 +433,8 @@ public class CityUIManager : MonoBehaviour
         else if (sector == "Trade")
         {
             // 1. レベルアップと武将の能力値のランダム上昇を実行
-            string randomGrowthLog = GameManager.Instance.RandomlyImproveWarlordStat(selectedWarlord); 
-            GameManager.Instance.TryLevelUp(targetCity, "Trade", baseAbility); 
+            string randomGrowthLog = GameManager.Instance.RandomlyImproveWarlordStat(selectedWarlord);
+            GameManager.Instance.TryLevelUp(targetCity, "Trade", baseAbility);
 
             Debug.Log($"港整備成功。{randomGrowthLog}"); // 成長ログを表示
         }
@@ -450,7 +450,7 @@ public class CityUIManager : MonoBehaviour
         // 9. UIの更新をGameManagerに要求 (全体の資源表示を更新)
         //GameManager.Instance.UpdateAllUI(); // 仮のメソッド名
     }
-    
+
     /*
         // 1. 担当武将を任命
         // TODO: ここで GameManager.currentAgricultureWarlord = selectedWarlord のような割り当てロジックが必要
@@ -471,59 +471,59 @@ public class CityUIManager : MonoBehaviour
         UpdateCityUI();
     }*/
 
-
-    
-    // ★★★ 武将リストの生成とフィルタリング ★★★
-    public void LoadGeneralList()
+    /// <summary>
+    /// 左側の出陣スロット一覧（stagedTroopSlots）を生成する。
+    /// </summary>
+    public void LoadStagingList()
     {
-        // 1. リスト要素をすべてクリア (Contentをリセット)
+        // 1. リスト要素をすべてクリア 
         foreach (Transform child in generalListContent)
         {
             Destroy(child.gameObject);
         }
-    
-        // 2. 現在の城の武将リストを取得 (Location Enumに基づいてフィルタリング)
-        string currentCityName = currentCity.Data.cityName;
-        List<GeneralData> localGenerals = GameManager.Instance.GetGeneralsInCity(currentCityName);
+        
+        // 2. ★★★ 修正箇所: グローバルな部隊スロットを参照 ★★★
+        List<TroopData> slotList = GameManager.Instance.stagedTroopSlots;
 
-        if (localGenerals == null || localGenerals.Count == 0)
+        if (slotList == null || slotList.Count == 0)
         {
-            Debug.Log("この城には現在、出陣可能な武将がいません。");
+            Debug.Log("出陣スロットは現在空です。");
             return;
         }
 
         // 3. リストの動的生成
-        foreach (GeneralData general in localGenerals)
+        // (このループで UnitSlotItem.prefab を生成し、Slotのデータを表示します)
+        for (int i = 0; i < slotList.Count; i++)
         {
-            GameObject itemObj = Instantiate(generalItemPrefab, generalListContent);
-            GeneralItemController itemController = itemObj.GetComponent<GeneralItemController>();
-            if (itemController != null)
-            {
-                itemController.Initialize(general, this); 
-            }
+            TroopData currentTroop = slotList[i];
+            
+            // ここで SlotItemPrefab を生成し、初期化ロジックを呼び出す
+            // 例: itemController.InitializeSlot(currentTroop, i, this);
+            
+            // ... (UI生成の既存ロジックは省略) ...
         }
-        Debug.Log($"【編成リスト】{localGenerals.Count}名の武将をロードしました。");
+        Debug.Log($"【出陣スロット】{slotList.Count}個のスロットをロードしました。");
     }
-    
+
     // ★★★ 武将がリストで選択されたとき (左リスト -> 右パネル) ★★★
     public void SetSelectedGeneral(GeneralData general)
     {
         selectedDeploymentGeneral = general;
-        
+
         // 1. UIの切り替え: 武将リストを非表示、兵数入力を表示
-        if (generalListPanel != null && troopInputPanel != null) 
+        if (generalListPanel != null && troopInputPanel != null)
         {
             // 左側の武将リストを非表示にする
-            generalListPanel.SetActive(false);  
+            generalListPanel.SetActive(false);
 
             // 右側の兵数入力パネルを表示する
-            troopInputPanel.SetActive(true);    
+            troopInputPanel.SetActive(true);
         }
         else
         {
             Debug.LogError("FATAL ERROR: generalListPanel または troopInputPanel が Inspector で未接続です！");
         }
-        
+
         Debug.Log($"大将として {general.generalName} を選択しました。");
     }
 
@@ -579,80 +579,80 @@ public class CityUIManager : MonoBehaviour
     /// 兵種選択パネルで兵種を選択した後、実行ボタンを押したときに呼ばれる想定のメソッド。
     /// currentModeに基づき、訓練、交流、募兵のいずれかを実行する。
     /// </summary>
- // CityUIManager.cs の ExecuteTroopAction メソッドを修正
+    // CityUIManager.cs の ExecuteTroopAction メソッドを修正
 
-/// <summary>
-/// 兵種選択パネルで兵種を選択した後、実行ボタンが押されたときに呼ばれる。
-/// 選択された兵種インデックス (1, 2, 3) を引数として受け取る。
-/// </summary>
-public void ExecuteTroopAction(int troopIndex) // ★★★ int troopIndex を引数として受け取るように修正 ★★★
-{
-    // currentCityがnullでないことを確認
-    if (currentCity == null)
+    /// <summary>
+    /// 兵種選択パネルで兵種を選択した後、実行ボタンが押されたときに呼ばれる。
+    /// 選択された兵種インデックス (1, 2, 3) を引数として受け取る。
+    /// </summary>
+    public void ExecuteTroopAction(int troopIndex) // ★★★ int troopIndex を引数として受け取るように修正 ★★★
     {
-        Debug.LogError("CityComponentが見つかりません。");
-        return;
-    }
+        // currentCityがnullでないことを確認
+        if (currentCity == null)
+        {
+            Debug.LogError("CityComponentが見つかりません。");
+            return;
+        }
 
-    // 1. 現在のモードと選択された兵種インデックスを取得 (selectedTroopIndexの代わりに troopIndex を使用)
-    // 以前のロジックを、引数 troopIndex を使用するように調整
-    
-    int recruitAmount = 500; 
-    int goldCost = 120;      
-    int foodCost = 100;      
-    string actionName = "";
-    string result = "";
+        // 1. 現在のモードと選択された兵種インデックスを取得 (selectedTroopIndexの代わりに troopIndex を使用)
+        // 以前のロジックを、引数 troopIndex を使用するように調整
 
-    // 2. モードに基づいた CityComponent のメソッドを実行
-    if (currentMode == MilitaryActionMode.Training)
-    {
-        result = currentCity.PerformTraining(troopIndex, 200, 10); 
-        actionName = "訓練";
-    }
-    else if (currentMode == MilitaryActionMode.MoraleBoost)
-    {
-        result = currentCity.PerformMoraleBoost(troopIndex, 80, 15);
-        actionName = "士気向上";
-    }
-    else if (currentMode == MilitaryActionMode.Recruitment)
-    {
-        result = currentCity.PerformRecruitment(troopIndex, goldCost, foodCost, recruitAmount);
-        actionName = "募兵";
-    }
-    else
-    {
-        Debug.LogWarning("軍事アクションモードが未設定です。");
-        return;
-    }
+        int recruitAmount = 500;
+        int goldCost = 120;
+        int foodCost = 100;
+        string actionName = "";
+        string result = "";
 
-    Debug.Log($"[{actionName}結果] {result}");
+        // 2. モードに基づいた CityComponent のメソッドを実行
+        if (currentMode == MilitaryActionMode.Training)
+        {
+            result = currentCity.PerformTraining(troopIndex, 200, 10);
+            actionName = "訓練";
+        }
+        else if (currentMode == MilitaryActionMode.MoraleBoost)
+        {
+            result = currentCity.PerformMoraleBoost(troopIndex, 80, 15);
+            actionName = "士気向上";
+        }
+        else if (currentMode == MilitaryActionMode.Recruitment)
+        {
+            result = currentCity.PerformRecruitment(troopIndex, goldCost, foodCost, recruitAmount);
+            actionName = "募兵";
+        }
+        else
+        {
+            Debug.LogWarning("軍事アクションモードが未設定です。");
+            return;
+        }
 
-    // 3. UIの更新
-    UpdateCityUI(); 
+        Debug.Log($"[{actionName}結果] {result}");
 
-    // 4. 後処理: パネル非表示とモードリセット
-    if (troopSelectionPanel != null)
-    {
-        troopSelectionPanel.SetActive(false);
+        // 3. UIの更新
+        UpdateCityUI();
+
+        // 4. 後処理: パネル非表示とモードリセット
+        if (troopSelectionPanel != null)
+        {
+            troopSelectionPanel.SetActive(false);
+        }
+        currentMode = MilitaryActionMode.None;
     }
-    currentMode = MilitaryActionMode.None; 
-}
 
     // CityUIManager.cs のクラス内に追加
 
-// 補助関数 (兵種インデックスに基づき、適切なユニットプレファブを返す)
+    // 補助関数 (兵種インデックスに基づき、適切なユニットプレファブを返す)
     private GameObject GetUnitPrefabByTroopIndex(int index)
     {
         // ★暫定的なロジック: 実際のプレファブはGameManagerに接続する必要があります★
         // (ここでは、仮にResourcesからロードするロジックを再定義します)
-        if (index == 1) return Resources.Load<GameObject>("Prefabs/Unit_Sword_Prefab"); 
-        if (index == 2) return Resources.Load<GameObject>("Prefabs/Unit_Bow_Prefab"); 
-        if (index == 3) return Resources.Load<GameObject>("Prefabs/Unit_Navy_Prefab"); 
-        
+        if (index == 1) return Resources.Load<GameObject>("Prefabs/Unit_Sword_Prefab");
+        if (index == 2) return Resources.Load<GameObject>("Prefabs/Unit_Bow_Prefab");
+        if (index == 3) return Resources.Load<GameObject>("Prefabs/Unit_Navy_Prefab");
+
         // エラーを防ぐため、GameManagerに接続されているデフォルトのプレファブを返します
-        return GameManager.Instance.MilitaryUnitPrefab; 
+        return GameManager.Instance.MilitaryUnitPrefab;
     }
-    
+
 
 
     /// <summary>
@@ -672,14 +672,14 @@ public void ExecuteTroopAction(int troopIndex) // ★★★ int troopIndex を�
             // ※ 注: currentCityクラスにReturnTroopsメソッドが実装されている必要があります
             if (currentCity != null)
             {
-                currentCity.ReturnTroops(troopToRemove); 
+                currentCity.ReturnTroops(troopToRemove);
             }
-            
+
             // 3. 【UIの削除】
             Destroy(itemObject);
 
             // 4. 【左リストの更新】: 武将がフリーになったため、編成リストに再表示
-            LoadGeneralList(); 
+            LoadStagingList();
 
             Debug.Log($"【編成解除】{troopToRemove.general.generalName} の部隊を解除し、兵を都市に戻しました。");
         }
@@ -688,7 +688,7 @@ public void ExecuteTroopAction(int troopIndex) // ★★★ int troopIndex を�
             Debug.LogWarning("解除しようとした部隊データが stagedTroops リストに見つかりませんでした。");
         }
     }
-// 補助メソッド: 現在の都市の城主を探す
+    // 補助メソッド: 現在の都市の城主を探す
     private string FindRulerNameByLocation(Location targetLocationID)
     {
         // GameManagerから全武将を取得し、フィルタリング
@@ -700,11 +700,37 @@ public void ExecuteTroopAction(int troopIndex) // ★★★ int troopIndex を�
             return ruler.generalName;
         }
         // 武将が見つからない、または城主が設定されていない場合は勢力名を表示
-        return "（城主不在）"; 
+        return "（城主不在）";
     }
 
 
     // ... (補助関数 GetUnitPrefabByTroopIndex は省略) ...
 
-    // ExecuteTroopAction, CalculateNegotiationBonus, CalculateCultureBonus, ExecuteTrade, LoadGeneralList... (その他のメソッド)
+    // ExecuteTroopAction, CalculateNegotiationBonus, CalculateCultureBonus, ExecuteTrade, LoadStagingList... (その他のメソッド)
+
+    /// <summary>
+    /// 新しい空の部隊スロットをグローバルリストに追加し、UIを更新する。
+    /// このメソッドを左側リストの「＋新規部隊編成」ボタンに割り当てます。
+    /// </summary>
+    public void AddNewDeploymentSlot()
+    {
+        // 1. 新しい空のスロット (null) をGameManagerのリストに追加
+        if (GameManager.Instance != null)
+        {
+            // 最初のスロットが空の場合のみ追加を許可する、または常に新規追加するロジックを設定
+
+            // ★暫定：常に新しいスロット（null）を追加します
+            GameManager.Instance.stagedTroopSlots.Add(null);
+
+            Debug.Log("新しい部隊スロットが追加されました。総スロット数: " + GameManager.Instance.stagedTroopSlots.Count);
+
+            // 2. 左側のリストUIを再生成
+            LoadStagingList();
+
+            // 3. (オプション) 追加されたスロットを自動で選択し、右側パネルを表示するロジック
+            // ここでは実装を省略しますが、FinalizeDeploymentロジックの後に実装が必要です。
+        }
+    }
+
+
 }

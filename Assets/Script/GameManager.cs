@@ -28,6 +28,11 @@ public class GameManager : MonoBehaviour
     public GameObject MilitaryUnitPrefab; // ★InspectorでMilitaryUnitPrefabを接続★
     public List<UnitController> activeUnits = new List<UnitController>();
 
+    [Header("出撃ステージングエリア")]
+    // すべての編成スロット（部隊）を保持するリスト
+    // null は空のスロット、TroopData は編成済みの部隊を示す
+    public List<TroopData> stagedTroopSlots = new List<TroopData>();
+
     [Header("新しい資源とレベル")]
     public int money = 5000;  // 初期所持金
     public int food = 2000;   // 食糧資源
