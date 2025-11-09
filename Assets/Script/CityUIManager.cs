@@ -78,6 +78,19 @@ public class CityUIManager : MonoBehaviour
     public GameObject generalItemPrefab;      // 武将リストアイテムのプレファブ
     public TMP_InputField troopInputField;    // 兵数入力フィールド
 
+    [Header("編成UI - 構造参照")]
+    public GameObject leftUnitListPanel;    // ★新規: 左側のリスト全体 (Left_UnitListPanel)
+    public GameObject rightDetailPanel;     // ★新規: 右側の詳細パネル全体 (Right_DetailPanel)
+    public GameObject panelWarlordSelect;   // ★新規: 右側の子パネル (Panel_WarlordSelect)
+    public GameObject panelTroopSelect;     // ★新規: 右側の子パネル (Panel_TroopSelect)
+    public GameObject panelTroopSetting;    // ★新規: 右側の子パネル (Panel_TroopSetting)
+    // public GameObject unitSlotItemPrefab; // UnitSlotItem.prefabを接続
+
+    [Header("スロット編成用参照")]
+    public GameObject unitSlotItemPrefab; // UnitSlotItem.prefabを接続
+    private int currentSelectedSlotIndex = -1; // -1は未選択
+
+
     [Header("兵種トグル")]
     public Toggle swordToggle;
     public Toggle bowToggle;
@@ -316,11 +329,16 @@ public class CityUIManager : MonoBehaviour
     {
         if (deploymentPanel != null)
         {
+            // 1. パネル構造の表示
             deploymentPanel.SetActive(true);
-            // 初期状態：武将リストを表示し、入力パネルを非表示
-            if (generalListPanel != null) generalListPanel.SetActive(true);
-            if (troopInputPanel != null) troopInputPanel.SetActive(false);
+            if (leftUnitListPanel != null) leftUnitListPanel.SetActive(true);
+            if (rightDetailPanel != null) rightDetailPanel.SetActive(true);
+
+            // 2. スロットリストを生成
             LoadStagingList();
+
+            // 3. 初期状態として兵数設定パネルは非表示にしておく
+            if (panelTroopSetting != null) panelTroopSetting.SetActive(false);
         }
     }
 
@@ -476,34 +494,48 @@ public class CityUIManager : MonoBehaviour
     /// </summary>
     public void LoadStagingList()
     {
-        // 1. リスト要素をすべてクリア 
+        // 1. リスト要素をすべてクリア (Contentをリセット)
+        // generalListContent: Scroll ViewのContent RectTransform (生成場所)
         foreach (Transform child in generalListContent)
         {
             Destroy(child.gameObject);
         }
-        
+
         // 2. ★★★ 修正箇所: グローバルな部隊スロットを参照 ★★★
+        // GameManagerから全スロットのリストを取得
         List<TroopData> slotList = GameManager.Instance.stagedTroopSlots;
 
         if (slotList == null || slotList.Count == 0)
         {
+            // リストが空の場合、新規編成ボタンが表示されているはずなので、ここではUI生成をスキップ
             Debug.Log("出陣スロットは現在空です。");
             return;
         }
 
         // 3. リストの動的生成
-        // (このループで UnitSlotItem.prefab を生成し、Slotのデータを表示します)
+        // UnitSlotItemPrefab (新しいスロットアイテムプレファブ) を使用してリストを生成
         for (int i = 0; i < slotList.Count; i++)
         {
             TroopData currentTroop = slotList[i];
-            
-            // ここで SlotItemPrefab を生成し、初期化ロジックを呼び出す
-            // 例: itemController.InitializeSlot(currentTroop, i, this);
-            
-            // ... (UI生成の既存ロジックは省略) ...
+
+            // SlotItemPrefab を生成
+            // unitSlotItemPrefab のフィールド名が UnitSlotItemPrefab になっていると仮定
+            GameObject itemObj = Instantiate(unitSlotItemPrefab, generalListContent);
+
+            // ★重要: UnitSlotItemController.cs がプレファブにアタッチされている必要があります★
+            UnitSlotItemController itemController = itemObj.GetComponent<UnitSlotItemController>();
+
+            if (itemController != null)
+            {
+                // Initializeにスロットデータとインデックスを渡す
+                // currentTroop が null の場合、SlotItemControllerは「空」として表示する
+                itemController.Initialize(currentTroop, i, this);
+            }
         }
+
         Debug.Log($"【出陣スロット】{slotList.Count}個のスロットをロードしました。");
     }
+
 
     // ★★★ 武将がリストで選択されたとき (左リスト -> 右パネル) ★★★
     public void SetSelectedGeneral(GeneralData general)
@@ -727,8 +759,49 @@ public class CityUIManager : MonoBehaviour
             // 2. 左側のリストUIを再生成
             LoadStagingList();
 
-            // 3. (オプション) 追加されたスロットを自動で選択し、右側パネルを表示するロジック
-            // ここでは実装を省略しますが、FinalizeDeploymentロジックの後に実装が必要です。
+            // 3. 追加されたばかりの新しいスロットを自動で選択
+            int newIndex = GameManager.Instance.stagedTroopSlots.Count - 1;
+            SelectDeploymentSlot(newIndex);
+        }
+    }
+
+    //左リストのボタンが押されたときに、右側パネルを更新するロジック
+    public void SelectDeploymentSlot(int index)
+    {
+        currentSelectedSlotIndex = index;
+        Debug.Log($"スロット {index + 1} が選択されました。");
+
+        TroopData selectedTroop = GameManager.Instance.stagedTroopSlots[index];
+
+        // 右側パネルの表示を切り替え
+        rightDetailPanel.SetActive(true);
+
+        // ★★★ 右側UIの更新ロジックの呼び出し ★★★
+        UpdateRightDetailPanel(selectedTroop);
+    }
+
+    private void UpdateRightDetailPanel(TroopData troop)
+    {
+        // 武将選択エリア (Panel_WarlordSelect) を常に表示
+        panelWarlordSelect.SetActive(true);
+
+        // 兵種設定エリア (Panel_TroopSelect/Setting) の初期状態を制御
+        if (troop == null)
+        {
+            // スロットが空の場合：武将選択を強調し、兵種/兵数パネルを非表示にする
+            panelTroopSelect.SetActive(false);
+            panelTroopSetting.SetActive(false);
+
+            // TODO: 右側パネルに「武将を設定してください」という初期メッセージを表示
+        }
+        else
+        {
+            // スロットが編成済みの場合：全パネルを表示し、データを入力フィールドに反映
+            panelTroopSelect.SetActive(true);
+            panelTroopSetting.SetActive(true);
+
+            // TODO: troop.general.generalName などを Panel_WarlordSelect に表示
+            // TODO: troop.count を troopInputField.text に表示
         }
     }
 
